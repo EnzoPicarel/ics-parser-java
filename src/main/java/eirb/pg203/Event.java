@@ -1,7 +1,7 @@
 package eirb.pg203;
 import java.time.Instant;
 
-class Event {
+public class Event {
     
     Instant creation_date;
     Instant start_date;
@@ -20,5 +20,24 @@ class Event {
         this.location = location;
         this.description = description;
         this.attendance = attendance;
+    }
+    public String toString() {
+        return String.format("""
+            Event{
+                Creation Date: %s
+                Start Date: %s
+                End Date: %s
+                Summary: %s
+                Location: %s
+                Description: %s
+                Attendance: %s
+            }""",
+            creation_date,
+            start_date,
+            end_date,
+            summary,
+            location,
+            description,
+            attendance);
     }
 }
