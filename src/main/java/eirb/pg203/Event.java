@@ -1,8 +1,5 @@
 package eirb.pg203;
-
-public enum Attendance {
-    PUBLIC, CONFIDENTIAL;
-}
+import java.time.Instant;
 
 class Event {
     
