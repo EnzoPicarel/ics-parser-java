@@ -1,6 +1,7 @@
 plugins {
         id 'application'
         id 'jacoco'
+        id "com.diffplug.spotless" version "6.19.0"
 }
 
 application {
@@ -28,4 +29,13 @@ jar {
         manifest {
                 attributes 'Main-Class': application.mainClass
         }
+}
+
+// to exec : ./gradlew spotlessApply
+// to test : ./gradlew spotlessCheck
+spotless {
+    java {
+        target 'src/**/*.java'              
+        googleJavaFormat()                                             
+    }
 }
