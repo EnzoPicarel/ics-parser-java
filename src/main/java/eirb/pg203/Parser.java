@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Parser {
+  private Parser() {}
+  ;
+
   private static Instant parseIcsDate(String s) {
     if (s == null) return null;
 
