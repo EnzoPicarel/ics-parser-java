@@ -13,7 +13,7 @@ public class Parser {
   private Parser() {}
   ;
 
-  public static Instant parseIcsDate(String s) {
+  static Instant parseIcsDate(String s) {
     if (s == null) return null;
 
     DateTimeFormatter fZulu =
@@ -22,7 +22,7 @@ public class Parser {
     return Instant.from(fZulu.parse(s));
   }
 
-  public static ArrayList<Event> parse(String filePath) {
+  static ArrayList<Event> parse(String filePath) {
     try (FileReader fileReader = new FileReader(filePath);
         BufferedReader bufferedReader = new BufferedReader(fileReader)) {
       String line;
