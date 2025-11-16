@@ -1,5 +1,7 @@
 #!/bin/bash
 
+./gradlew spotlessApply
+
 echo "==========CLEANING=========="
 ./gradlew clean
 

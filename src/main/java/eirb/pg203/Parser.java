@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,19 +13,13 @@ public class Parser {
   private Parser() {}
   ;
 
-  private static Instant parseIcsDate(String s) {
+  public static Instant parseIcsDate(String s) {
     if (s == null) return null;
 
     DateTimeFormatter fZulu =
         DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'").withZone(ZoneId.of("UTC"));
 
-    DateTimeFormatter fLocal = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
-
-    if (s.endsWith("Z")) {
-      return Instant.from(fZulu.parse(s));
-    }
-
-    return LocalDateTime.parse(s, fLocal).atZone(ZoneId.systemDefault()).toInstant();
+    return Instant.from(fZulu.parse(s));
   }
 
   public static ArrayList<Event> parse(String filePath) {
