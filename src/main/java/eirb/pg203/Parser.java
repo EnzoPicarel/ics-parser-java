@@ -1,6 +1,7 @@
 package eirb.pg203;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.Instant;
@@ -11,7 +12,6 @@ import java.util.HashMap;
 
 public class Parser {
   private Parser() {}
-  ;
 
   static Instant parseIcsDate(String s) {
     if (s == null) return null;
@@ -33,7 +33,7 @@ public class Parser {
           line_array = new HashMap<>();
         }
         if (line_array != null) {
-          if (line.contains("LOCATION")) { // LOCATION can be on two line or more
+          if (line.contains("LOCATION")) { // LOCATION can be on zero, two line or more
             String line_location = line;
             while (((line = bufferedReader.readLine()) != null)
                 && (!line.contains("DESCRIPTION"))) {
@@ -92,6 +92,9 @@ public class Parser {
         }
       }
       return List_Event;
+    } catch (FileNotFoundException e) {
+      System.out.println("File not found : " + e.getMessage());
+      return new ArrayList<>();
     } catch (IOException e) {
       System.out.println("Error reading file: " + e.getMessage());
       return new ArrayList<>();

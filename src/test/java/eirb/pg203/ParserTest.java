@@ -20,7 +20,6 @@ public class ParserTest {
   @Test
   public void testParseFalsePath() throws Exception {
     ArrayList<Event> events = Parser.parse("nonexistent.ics");
-
     assertNotNull(events);
     assertEquals(0, events.size());
   }

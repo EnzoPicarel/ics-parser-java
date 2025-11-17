@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Client {
-  private static final String USAGE = "Usage: java Client <path_to_ics_file>";
-
   public static void main(String[] args) {
     if (args.length != 1) {
-      System.err.println(USAGE);
+      System.err.println("ADD PATH");
       System.exit(1);
     }
 

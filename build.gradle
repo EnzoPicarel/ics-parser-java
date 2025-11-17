@@ -5,7 +5,7 @@ plugins {
 }
 
 application {
-    mainClass = 'eirb.pg203.Main'
+    mainClass = 'eirb.pg203.Client'
 }
 
 repositories {
