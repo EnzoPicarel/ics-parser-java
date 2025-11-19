@@ -1,4 +1,4 @@
-package eirb.pg203;
+package eirb.pg203.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 

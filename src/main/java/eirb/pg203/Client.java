@@ -1,5 +1,6 @@
 package eirb.pg203;
 
+import eirb.pg203.model.*;
 import java.util.List;
 
 public class Client {
@@ -16,8 +17,7 @@ public class Client {
     }
 
     Calendar C = new Calendar(Parser.parse(file, type));
-
-    List<Event> list_event = C.getEvents();
-    System.out.println(list_event);
+    List<CalendarComponent> list_component = C.getAllComponents();
+    System.out.println(list_component);
   }
 }

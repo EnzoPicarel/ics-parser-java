@@ -1,4 +1,4 @@
-package eirb.pg203;
+package eirb.pg203.model;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -24,7 +24,7 @@ public class Parser {
     }
   }
 
-  static ArrayList<CalendarComponent> parse(String filePath, String type) {
+  public static ArrayList<CalendarComponent> parse(String filePath, String type) {
     ArrayList<CalendarComponent> listComponents = new ArrayList<>();
 
     try (FileReader fileReader = new FileReader(filePath);

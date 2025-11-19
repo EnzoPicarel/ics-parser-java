@@ -1,4 +1,4 @@
-package eirb.pg203;
+package eirb.pg203.model;
 
 import java.time.Instant;
 
@@ -13,7 +13,7 @@ public abstract class CalendarComponent {
 
   Instant creation_date;
 
-  public CalendarComponent(String uid, String summary, String location, Instant creation_date) {
+  CalendarComponent(String uid, String summary, String location, Instant creation_date) {
     this.uid = uid;
     this.summary = summary;
     this.location = location;

@@ -1,4 +1,4 @@
-package eirb.pg203;
+package eirb.pg203.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ public class Calendar {
   // liste qui contient des event et des todos
   private List<CalendarComponent> components = new ArrayList<>();
 
-  Calendar(ArrayList<CalendarComponent> L) {
+  public Calendar(ArrayList<CalendarComponent> L) {
     this.components = L;
   }
 
