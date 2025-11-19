@@ -8,8 +8,8 @@ public class Todo extends CalendarComponent {
   Instant completed_date;
   Instant due_date;
   Instant modification_date;
-  Boolean completed;
-  Attendance attendance;
+  String completed;
+  String attendance;
   Integer sequence;
 
   Todo(
@@ -22,8 +22,8 @@ public class Todo extends CalendarComponent {
       Instant due_date,
       Instant modification_date,
       Instant creation_date,
-      Boolean completed,
-      Attendance attendance,
+      String completed,
+      String attendance,
       Integer sequence) {
     super(uid, summary, location, creation_date);
     this.priority = priority;
