@@ -4,45 +4,51 @@ import java.time.Instant;
 
 public abstract class CalendarComponent {
 
-    //Propriétés communes
-    protected String uid;
+  // Propriétés communes
+  protected String uid;
 
-    protected String summary;
+  protected String summary;
 
-    protected String location;
-    
-    protected Instant creationDate;
+  protected String location;
 
+  protected Instant creation_date;
 
-    public String getUid() {
-        return uid;
-    }
+  public CalendarComponent(String uid, String summary, String location, Instant creation_date) {
+    this.uid = uid;
+    this.summary = summary;
+    this.location = location;
+    this.creation_date = creation_date;
+  }
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
+  public String getUid() {
+    return uid;
+  }
 
-    public String getSummary() {
-        return summary;
-    }
+  public void setUid(String uid) {
+    this.uid = uid;
+  }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
+  public String getSummary() {
+    return summary;
+  }
 
-    public String getLocation() {
-        return location;
-    }
+  public void setSummary(String summary) {
+    this.summary = summary;
+  }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+  public String getLocation() {
+    return location;
+  }
 
-    public Instant getCreationDate() {
-        return creationDate;
-    }
+  public void setLocation(String location) {
+    this.location = location;
+  }
 
-    public void setCreationDate(Instant creationDate) {
-        this.creationDate = creationDate;
-    }
+  public Instant getCreationDate() {
+    return creation_date;
+  }
+
+  public void setCreationDate(Instant creationDate) {
+    this.creation_date = creation_date;
+  }
 }

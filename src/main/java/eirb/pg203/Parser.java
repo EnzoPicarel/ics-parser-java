@@ -77,12 +77,12 @@ public class Parser {
 
           Event event =
               new Event(
+                  line_array.get("UID"),
+                  line_array.get("SUMMARY"),
+                  line_array.get("LOCATION"),
                   creationDate,
                   startDate,
                   endDate,
-                  line_array.get("SUMMARY"),
-                  line_array.get("UID"),
-                  line_array.get("LOCATION"),
                   line_array.get("DESCRIPTION"),
                   null // attendance à définir selon vos besoins
                   );
