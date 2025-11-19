@@ -14,89 +14,87 @@ public class Parser {
   private Parser() {}
 
   static Instant parseIcsDate(String s) {
-    if (s == null) return null;
-
-    DateTimeFormatter fZulu =
-        DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'").withZone(ZoneId.of("UTC"));
-
-    return Instant.from(fZulu.parse(s));
+    if (s == null || s.isEmpty()) return null;
+    try {
+      // Nettoyage (trim) au cas où
+      DateTimeFormatter fZulu =
+          DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'").withZone(ZoneId.of("UTC"));
+      return Instant.from(fZulu.parse(s.trim()));
+    } catch (Exception e) {
+      return null; // On retourne null si la date n'est pas au bon format
+    }
   }
 
   static ArrayList<Event> parse(String filePath) {
+    ArrayList<Event> listEvent = new ArrayList<>();
+
     try (FileReader fileReader = new FileReader(filePath);
         BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+
       String line;
-      HashMap<String, String> line_array = null;
-      ArrayList<Event> List_Event = new ArrayList<>();
+      HashMap<String, String> map = null;
+      String lastKey = null; // Sert à se souvenir de la clé précédente (ex: "DESCRIPTION")
+
       while ((line = bufferedReader.readLine()) != null) {
+
+        // 1. Début d'un événement
         if (line.contains("BEGIN:VEVENT")) {
-          line_array = new HashMap<>();
+          map = new HashMap<>();
+          lastKey = null;
+          continue;
         }
-        if (line_array != null) {
-          if (line.contains("LOCATION")) { // LOCATION can be on zero, two line or more
-            String line_location = line;
-            while (((line = bufferedReader.readLine()) != null)
-                && (!line.contains("DESCRIPTION"))) {
-              if (line != null) {
-                if (line.startsWith(" ")) {
-                  line = line.substring(1, line.length());
-                }
-                line_location = line_location.concat(line);
-              }
-            }
-            String[] parts = line_location.split(":"); // [0] = LOCATION and [1] data
-            if (parts.length == 1) {
-              line_array.put(parts[0], "UNDEFINED");
-            } else {
-              line_array.put(parts[0], parts[1]);
-            }
 
-            String line_description = line;
-            while (((line = bufferedReader.readLine()) != null) && (!line.contains("UID"))) {
-              if (line != null) {
-                if (line.startsWith(" ")) {
-                  line = line.substring(1, line.length());
-                }
-                line_description = line_description.concat(line);
-              }
-            }
-            String[] splited_descr = line_description.split(":", 2);
-            line_array.put(splited_descr[0], splited_descr[1]);
-
-            String[] splited_uid =
-                line.split(":"); // splited_uid[0] = "UID" and splited_uid[1] = data
-            line_array.put(splited_uid[0], splited_uid[1]);
-          } else { // add other field that are on 1 line only
-            line_array.put(line.split(":")[0], line.split(":")[1]);
-          }
-        }
-        if (line.contains("END:VEVENT") && line_array != null) {
-          Instant creationDate = parseIcsDate(line_array.get("DTSTAMP"));
-          Instant startDate = parseIcsDate(line_array.get("DTSTART"));
-          Instant endDate = parseIcsDate(line_array.get("DTEND"));
-
+        // 2. Fin d'un événement : on crée l'objet
+        if (line.contains("END:VEVENT") && map != null) {
           Event event =
               new Event(
-                  line_array.get("UID"),
-                  line_array.get("SUMMARY"),
-                  line_array.get("LOCATION"),
-                  creationDate,
-                  startDate,
-                  endDate,
-                  line_array.get("DESCRIPTION"),
-                  null // attendance à définir selon vos besoins
-                  );
-          List_Event.add(event);
+                  map.get("UID"),
+                  map.get("SUMMARY"),
+                  map.get("LOCATION"),
+                  parseIcsDate(map.get("DTSTAMP")),
+                  parseIcsDate(map.get("DTSTART")),
+                  parseIcsDate(map.get("DTEND")),
+                  map.get("DESCRIPTION"),
+                  null);
+          listEvent.add(event);
+          map = null; // On reset pour le prochain
+          continue;
+        }
 
-          line_array = null;
+        // 3. Traitement du contenu de l'événement
+        if (map != null && !line.isEmpty()) {
+
+          // CAS A : C'est une suite de ligne (commence par un espace)
+          if (line.startsWith(" ") && lastKey != null) {
+            String suiteDuTexte = line.substring(1); // On enlève l'espace du début
+            String ancienTexte = map.get(lastKey);
+
+            // On colle la suite au texte existant
+            map.put(lastKey, ancienTexte + suiteDuTexte);
+
+          }
+          // CAS B : C'est une nouvelle propriété (ex: "LOCATION:Salle B")
+          else {
+            String[] parts = line.split(":", 2); // On coupe uniquement au premier ":""
+            if (parts[1] != "") {
+              String key = parts[0];
+              String value = parts[1];
+
+              map.put(key, value);
+              lastKey = key; // On mémorise la clé au cas où la ligne suivante est une suite
+            } else {
+              map.put(parts[0], "UNDEFINED");
+            }
+          }
         }
       }
-      return List_Event;
+      return listEvent;
+
     } catch (FileNotFoundException e) {
-      System.out.println("File not found : " + e.getMessage());
+      System.out.println("Fichier introuvable : " + e.getMessage());
       return new ArrayList<>();
     } catch (IOException e) {
-      System.out.println("Error reading file: " + e.getMessage());
+      System.out.println("Erreur de lecture : " + e.getMessage());
       return new ArrayList<>();
     }
   }
