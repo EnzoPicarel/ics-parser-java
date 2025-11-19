@@ -9,7 +9,7 @@ public class Event extends CalendarComponent {
   Instant start_date;
   Instant end_date;
   String description;
-  Attendance attendance;
+  String attendance;
 
   Event(
       String uid,
@@ -19,7 +19,7 @@ public class Event extends CalendarComponent {
       Instant start_date,
       Instant end_date,
       String description,
-      Attendance attendance) {
+      String attendance) {
     super(uid, summary, location, creation_date);
     this.creation_date = creation_date;
     this.start_date = start_date;
