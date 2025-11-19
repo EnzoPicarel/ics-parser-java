@@ -11,7 +11,7 @@ public class ParserTest {
 
   @Test
   public void testParseSimpleICS() throws Exception {
-    ArrayList<CalendarComponent> events = Parser.parse(ICS_PATH);
+    ArrayList<CalendarComponent> events = Parser.parse(ICS_PATH, "events");
 
     assertFalse(events.isEmpty());
     assertNotNull(events.get(0));
@@ -19,14 +19,14 @@ public class ParserTest {
 
   @Test
   public void testParseFalsePath() throws Exception {
-    ArrayList<CalendarComponent> events = Parser.parse("nonexistent.ics");
+    ArrayList<CalendarComponent> events = Parser.parse("nonexistent.ics", "events");
     assertNotNull(events);
     assertEquals(0, events.size());
   }
 
   @Test
   void testFirstEvent() throws Exception {
-    ArrayList<CalendarComponent> events = Parser.parse(ICS_PATH);
+    ArrayList<CalendarComponent> events = Parser.parse(ICS_PATH, "events");
     Event e = (Event) events.get(0);
 
     assertEquals(e.creation_date, Parser.parseIcsDate("20251104T215832Z"));
@@ -39,7 +39,7 @@ public class ParserTest {
 
   @Test
   void testLastEvent() throws Exception {
-    ArrayList<CalendarComponent> events = Parser.parse(ICS_PATH);
+    ArrayList<CalendarComponent> events = Parser.parse(ICS_PATH, "events");
     Event e = (Event) events.get(events.size() - 1);
 
     assertEquals(e.creation_date, Parser.parseIcsDate("20251104T215832Z"));
@@ -51,7 +51,7 @@ public class ParserTest {
 
   @Test
   public void testMutipleLineDescription() throws Exception {
-    ArrayList<CalendarComponent> events = Parser.parse(ICS_PATH);
+    ArrayList<CalendarComponent> events = Parser.parse(ICS_PATH, "events");
     Event e = (Event) events.get(1);
 
     assertEquals(e.creation_date, Parser.parseIcsDate("20251104T215832Z"));

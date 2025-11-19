@@ -11,14 +11,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Parser {
-  private Parser() {
-  }
+  private Parser() {}
 
   static Instant parseIcsDate(String s) {
-    if (s == null || s.isEmpty())
-      return null;
+    if (s == null || s.isEmpty()) return null;
     try {
-      DateTimeFormatter fZulu = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'").withZone(ZoneId.of("UTC"));
+      DateTimeFormatter fZulu =
+          DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'").withZone(ZoneId.of("UTC"));
       return Instant.from(fZulu.parse(s));
     } catch (Exception e) {
       return null;
@@ -49,15 +48,16 @@ public class Parser {
 
           // 2. Fin d'un événement : on crée l'objet
           if (line.contains("END:VEVENT") && map != null) {
-            Event event = new Event(
-                map.get("UID"),
-                map.get("SUMMARY"),
-                map.get("LOCATION"),
-                parseIcsDate(map.get("DTSTAMP")),
-                parseIcsDate(map.get("DTSTART")),
-                parseIcsDate(map.get("DTEND")),
-                map.get("DESCRIPTION"),
-                null);
+            Event event =
+                new Event(
+                    map.get("UID"),
+                    map.get("SUMMARY"),
+                    map.get("LOCATION"),
+                    parseIcsDate(map.get("DTSTAMP")),
+                    parseIcsDate(map.get("DTSTART")),
+                    parseIcsDate(map.get("DTEND")),
+                    map.get("DESCRIPTION"),
+                    null);
             listComponents.add(event);
             map = null; // On reset pour le prochain
             continue;
@@ -68,19 +68,20 @@ public class Parser {
         else {
 
           if (line.contains("END:VTODO") && map != null) {
-            Todo todo = new Todo(
-                map.get("UID"),
-                map.get("SUMMARY"),
-                map.get("LOCATION"),
-                map.get("PRIORITY"),
-                map.get("PERCENT-COMPLETE"),
-                parseIcsDate(map.get("COMPLETED")),
-                parseIcsDate(map.get("DUE")),
-                parseIcsDate(map.get("LAST-MODIFIED")),
-                parseIcsDate(map.get("DTSTAMP")),
-                map.get("STATUS"),
-                map.get("CLASS"),
-                map.get("SEQUENCE"));
+            Todo todo =
+                new Todo(
+                    map.get("UID"),
+                    map.get("SUMMARY"),
+                    map.get("LOCATION"),
+                    map.get("PRIORITY"),
+                    map.get("PERCENT-COMPLETE"),
+                    parseIcsDate(map.get("COMPLETED")),
+                    parseIcsDate(map.get("DUE")),
+                    parseIcsDate(map.get("LAST-MODIFIED")),
+                    parseIcsDate(map.get("DTSTAMP")),
+                    map.get("STATUS"),
+                    map.get("CLASS"),
+                    map.get("SEQUENCE"));
             listComponents.add(todo);
             map = null; // On reset pour le prochain
             continue;
