@@ -11,22 +11,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Parser {
-  private Parser() {}
+  private Parser() {
+  }
 
   static Instant parseIcsDate(String s) {
-    if (s == null || s.isEmpty()) return null;
+    if (s == null || s.isEmpty())
+      return null;
     try {
       // Nettoyage (trim) au cas où
-      DateTimeFormatter fZulu =
-          DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'").withZone(ZoneId.of("UTC"));
+      DateTimeFormatter fZulu = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'").withZone(ZoneId.of("UTC"));
       return Instant.from(fZulu.parse(s.trim()));
     } catch (Exception e) {
       return null; // On retourne null si la date n'est pas au bon format
     }
   }
 
-  static ArrayList<Event> parse(String filePath) {
-    ArrayList<Event> listEvent = new ArrayList<>();
+  static ArrayList<CalendarComponent> parse(String filePath, String type) {
+    ArrayList<CalendarComponent> listComponents = new ArrayList<>();
 
     try (FileReader fileReader = new FileReader(filePath);
         BufferedReader bufferedReader = new BufferedReader(fileReader)) {
@@ -37,28 +38,54 @@ public class Parser {
 
       while ((line = bufferedReader.readLine()) != null) {
 
-        // 1. Début d'un événement
-        if (line.contains("BEGIN:VEVENT")) {
+        // 0. Début d'un composant
+        if (line.contains("BEGIN:VEVENT") || line.contains("BEGIN:VTODO")) {
           map = new HashMap<>();
           lastKey = null;
           continue;
         }
 
-        // 2. Fin d'un événement : on crée l'objet
-        if (line.contains("END:VEVENT") && map != null) {
-          Event event =
-              new Event(
-                  map.get("UID"),
-                  map.get("SUMMARY"),
-                  map.get("LOCATION"),
-                  parseIcsDate(map.get("DTSTAMP")),
-                  parseIcsDate(map.get("DTSTART")),
-                  parseIcsDate(map.get("DTEND")),
-                  map.get("DESCRIPTION"),
-                  null);
-          listEvent.add(event);
-          map = null; // On reset pour le prochain
-          continue;
+        // 1. Gestion des événements
+        if (type.equals("events")) {
+
+          // 2. Fin d'un événement : on crée l'objet
+          if (line.contains("END:VEVENT") && map != null) {
+            Event event = new Event(
+                map.get("UID"),
+                map.get("SUMMARY"),
+                map.get("LOCATION"),
+                parseIcsDate(map.get("DTSTAMP")),
+                parseIcsDate(map.get("DTSTART")),
+                parseIcsDate(map.get("DTEND")),
+                map.get("DESCRIPTION"),
+                null);
+            listComponents.add(event);
+            map = null; // On reset pour le prochain
+            continue;
+          }
+        }
+
+        // 2. Gestion des todos
+        else {
+
+          if (line.contains("END:VTODO") && map != null) {
+            Todo todo = new Todo(
+                map.get("UID"),
+                map.get("SUMMARY"),
+                map.get("LOCATION"),
+                map.get("PRIORITY"),
+                map.get("PERCENT-COMPLETE"),
+                parseIcsDate(map.get("COMPLETED")),
+                parseIcsDate(map.get("DUE")),
+                parseIcsDate(map.get("LAST-MODIFIED")),
+                parseIcsDate(map.get("DTSTAMP")),
+                map.get("STATUS"),
+                map.get("CLASS"),
+                map.get("SEQUENCE"));
+            listComponents.add(todo);
+            map = null; // On reset pour le prochain
+            continue;
+          }
         }
 
         // 3. Traitement du contenu de l'événement
@@ -88,7 +115,7 @@ public class Parser {
           }
         }
       }
-      return listEvent;
+      return listComponents;
 
     } catch (FileNotFoundException e) {
       System.out.println("Fichier introuvable : " + e.getMessage());
