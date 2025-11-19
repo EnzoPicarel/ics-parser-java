@@ -49,6 +49,6 @@ public abstract class CalendarComponent {
   }
 
   public void setCreationDate(Instant creationDate) {
-    this.creation_date = creation_date;
+    this.creation_date = creationDate;
   }
 }
