@@ -1,6 +1,5 @@
 package eirb.pg203;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Client {
@@ -16,9 +15,9 @@ public class Client {
       System.exit(1);
     }
 
-    ArrayList<CalendarComponent> components = Parser.parse(file, type);
-    for (CalendarComponent c : components) {
-      System.out.println(c);
-    }
+    Calendar C = new Calendar(Parser.parse(file, type));
+
+    List<Event> list_event = C.getEvents();
+    System.out.println(list_event);
   }
 }

@@ -18,11 +18,10 @@ public class Parser {
     if (s == null || s.isEmpty())
       return null;
     try {
-      // Nettoyage (trim) au cas où
       DateTimeFormatter fZulu = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'").withZone(ZoneId.of("UTC"));
-      return Instant.from(fZulu.parse(s.trim()));
+      return Instant.from(fZulu.parse(s));
     } catch (Exception e) {
-      return null; // On retourne null si la date n'est pas au bon format
+      return null;
     }
   }
 
