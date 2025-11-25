@@ -35,9 +35,4 @@ public class Calendar {
         .map(component -> (Todo) component)
         .collect(Collectors.toList());
   }
-
-  @Override
-  public String toString() {
-    return "Calendar{" + "nombre d'éléments=" + components.size() + '}';
-  }
 }
