@@ -6,42 +6,40 @@ import java.util.stream.Collectors;
 
 public class Calendar {
 
-  // liste qui contient des event et des todos
-  private List<CalendarComponent> components = new ArrayList<>();
+  private List<CalendarComponent> components;
 
-  public Calendar(ArrayList<CalendarComponent> L) {
-    this.components = L;
+  public Calendar() {
+    this.components = new ArrayList<>();
   }
 
-  // méthode pour ajouter un composant (Event ou Todo)
   public void addComponent(CalendarComponent component) {
     if (component != null) {
       this.components.add(component);
     }
   }
 
-  // méthode pour obtenir tous les composants
   public List<CalendarComponent> getAllComponents() {
     return components;
   }
 
-  // méthode pour obtenir uniquement les events
   public List<Event> getEvents() {
     return components.stream()
-        .filter(
-            component ->
-                component instanceof Event) // on garde que les composants qui sont des Events
-        .map(component -> (Event) component) // on le convertit en Event
-        .collect(Collectors.toList()); // on collecte le tout dans une liste
+        .filter(component -> component instanceof Event)
+        .map(component -> (Event) component)
+        .collect(Collectors.toList());
   }
 
-  // méthode pour obtenir uniquement les todos
   public List<Todo> getTodos() {
     return components.stream()
-        .filter(
-            component ->
-                component instanceof Todo) // on garde que les composants qui sont des Events
-        .map(component -> (Todo) component) // on le convertit en Event
-        .collect(Collectors.toList()); // on collecte le tout dans une liste
+        .filter(component -> component instanceof Todo)
+        .map(component -> (Todo) component)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public String toString() {
+    return "Calendar{" +
+        "nombre d'éléments=" + components.size() +
+        '}';
   }
 }
