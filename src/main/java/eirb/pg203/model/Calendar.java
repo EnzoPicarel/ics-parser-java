@@ -38,8 +38,6 @@ public class Calendar {
 
   @Override
   public String toString() {
-    return "Calendar{" +
-        "nombre d'éléments=" + components.size() +
-        '}';
+    return "Calendar{" + "nombre d'éléments=" + components.size() + '}';
   }
 }

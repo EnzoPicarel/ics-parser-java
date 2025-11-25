@@ -1,7 +1,6 @@
 package eirb.pg203;
 
 import eirb.pg203.model.*;
-import java.util.List;
 
 public class Client {
   public static void main(String[] args) {
@@ -18,6 +17,6 @@ public class Client {
       System.exit(1);
     }
 
-    Calendar C =  AbstractParser.chooseParser(file, type);
+    Calendar C = AbstractParser.chooseParser(file, type);
   }
 }
