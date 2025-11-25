@@ -18,6 +18,6 @@ public class Client {
       System.exit(1);
     }
 
-    Calendar C = new Parser.parse(file, type);
+    Calendar C =  AbstractParser.chooseParser(file, type);
   }
 }
