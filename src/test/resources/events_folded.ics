@@ -1,0 +1,14 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:folded-1
+DTSTAMP:20251104T120000Z
+DTSTART:20251105T130000Z
+DTEND:20251105T140000Z
+SUMMARY:Cours POO Avancé
+LOCATION:Amphi X
+DESCRIPTION:Premiere ligne de description
+ 	Suite sur une nouvelle ligne avec une tabulation
+ Continuation sur une ligne avec espace
+END:VEVENT
+END:VCALENDAR

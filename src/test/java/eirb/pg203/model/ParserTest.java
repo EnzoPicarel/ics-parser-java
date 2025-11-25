@@ -8,19 +8,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-public class AbstractParserTest {
+public class ParserTest {
 
   private static final String ICS_PATH = "src/test/resources/i2.ics";
 
   /**
-   * Utilitaire local pour créer une date attendue (remplace l'ancien Parser.parseIcsDate statique)
+   * Utilitaire local pour créer une date attendue (remplace l'ancien
+   * Parser.parseIcsDate statique)
    */
   private Instant createExpectedDate(String dateStr) {
     try {
       // Adapte le format à celui de tes dates brutes (ex: 20251104T215832Z)
       String cleanDate = dateStr.replace("Z", "");
-      DateTimeFormatter f =
-          DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss").withZone(ZoneId.of("UTC"));
+      DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss").withZone(ZoneId.of("UTC"));
       return Instant.from(f.parse(cleanDate));
     } catch (Exception e) {
       throw new RuntimeException("Erreur format date test", e);
@@ -103,7 +103,8 @@ public class AbstractParserTest {
   @Test
   public void testUrlSelection() {
     // Teste si la logique chooseParser détecte bien une URL
-    // Cela va échouer silencieusement (retour vide) car l'URL n'existe pas, mais ça ne doit pas
+    // Cela va échouer silencieusement (retour vide) car l'URL n'existe pas, mais ça
+    // ne doit pas
     // crasher.
     Calendar calendar = AbstractParser.chooseParser("http://google.com/fake.ics", "events");
     assertNotNull(calendar);

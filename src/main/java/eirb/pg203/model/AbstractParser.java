@@ -33,10 +33,12 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
       // intéret de AutoCloseable
       String line;
       while ((line = icsReader.readLine()) != null) {
-        if (type.equals("events")) {
-          Event event = parseVEvent(icsReader);
+        // On ne parse que les composants correspondant au type demandé.
+        // Ancienne version lisait tout et supposait une homogénéité du fichier.
+        if (type.equals("events") && line.equals("BEGIN:VEVENT")) {
+          Event event = parseVEvent(icsReader); // icsReader est positionné après BEGIN:VEVENT
           if (event != null) calendar.addComponent(event);
-        } else if (type.equals("todos")) {
+        } else if (type.equals("todos") && line.equals("BEGIN:VTODO")) {
           Todo todo = parseVTodo(icsReader);
           if (todo != null) calendar.addComponent(todo);
         }
@@ -91,7 +93,8 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
         break;
       }
       // découpage clé/valeur
-      // on limite le split à 2 pour ne pas couper s'il y a des ':' dans la description
+      // on limite le split à 2 pour ne pas couper s'il y a des ':' dans la
+      // description
       String[] parts = line.split(":", 2);
       if (parts.length == 2) {
         String key =
@@ -108,7 +111,8 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
     if (s == null || s.isEmpty()) return null;
     try {
       // gestion basique du format Z (UTC)
-      // pour une gestion complète des Timezones, c'est plus complexe, mais suffisant pour ce
+      // pour une gestion complète des Timezones, c'est plus complexe, mais suffisant
+      // pour ce
       // projet.
       String cleanDate = s.replace("Z", "");
       DateTimeFormatter f =
