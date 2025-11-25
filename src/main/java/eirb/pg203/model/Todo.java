@@ -1,8 +1,6 @@
 package eirb.pg203.model;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 public class Todo extends CalendarComponent {
   String priority;
@@ -36,38 +34,5 @@ public class Todo extends CalendarComponent {
     this.completed = completed;
     this.attendance = attendance;
     this.sequence = sequence;
-  }
-
-  public String toString() {
-    DateTimeFormatter formatter =
-        DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault());
-    return String.format(
-        """
-            Todo{
-                Creation Date: %s
-                Uid: %s
-                Summary: %s
-                Location: %s
-                Priority: %s
-                Progress: %s
-                Completed Date: %s
-                Due Date: %s
-                Modification Date: %s
-                Completed: %s
-                Attendance: %s
-                Sequence: %s
-            }""",
-        formatter.format(creation_date),
-        uid,
-        summary,
-        location != null ? location : "UNDEFINED",
-        priority,
-        progress,
-        completed_date != null ? formatter.format(completed_date) : "UNDEFINED",
-        due_date != null ? formatter.format(due_date) : "UNDEFINED",
-        modification_date != null ? formatter.format(modification_date) : "UNDEFINED",
-        completed,
-        attendance,
-        sequence);
   }
 }
