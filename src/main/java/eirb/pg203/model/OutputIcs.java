@@ -15,12 +15,12 @@ public class OutputIcs extends Output {
   @Override
   public String header() {
     return """
-               BEGIN:VCALENDAR\r
-               VERSION:2.0\r
-               PRODID:-//ADE/version 6.0\r
-               CALSCALE:GREGORIAN\r
-               METHOD:PUBLISH\r
-               """;
+                BEGIN:VCALENDAR\r
+                VERSION:2.0\r
+                PRODID:-//ADE/version 6.0\r
+                CALSCALE:GREGORIAN\r
+                METHOD:PUBLISH\r
+                """;
   }
 
   @Override
@@ -31,7 +31,7 @@ public class OutputIcs extends Output {
   @Override
   public String displayEvent(Event e) {
     StringBuilder sb = new StringBuilder();
-    sb.append("BEGIN:VEVENT\r\n");
+    sb.append("BEGIN:VEVENT\n");
 
     sb.append(generateLine("DTSTAMP", fmt(e.creation_date)))
         .append(generateLine("UID", e.uid))
@@ -41,21 +41,21 @@ public class OutputIcs extends Output {
         .append(generateLine("LOCATION", e.location))
         .append(generateLine("DESCRIPTION", e.description));
 
-    sb.append("END:VEVENT\r\n");
+    sb.append("END:VEVENT\n");
     return sb.toString();
   }
 
   @Override
   public String displayTodo(Todo t) {
     StringBuilder sb = new StringBuilder();
-    sb.append("BEGIN:VTODO\r\n");
+    sb.append("BEGIN:VTODO\n");
 
     // Tout est maintenant uniforme via generateLine
     sb.append(generateLine("DTSTAMP", fmt(t.creation_date)))
         .append(generateLine("UID", t.uid))
         .append(generateLine("SUMMARY", t.summary))
         .append(generateLine("STATUS", t.status))
-        // Astuce : on peut passer les paramètres (VALUE=DATE) directement dans la clé
+        .append(generateLine("DSTART;VALUE=DATE", fmtDate(t.date_start)))
         .append(generateLine("DUE;VALUE=DATE", fmtDate(t.due_date)))
         .append(generateLine("COMPLETED", fmt(t.completed_date)))
         .append(generateLine("LAST-MODIFIED", fmt(t.modification_date)))
@@ -65,7 +65,7 @@ public class OutputIcs extends Output {
         .append(generateLine("CLASS", t.attendance))
         .append(generateLine("ORGANIZER", t.organizer));
 
-    sb.append("END:VTODO\r\n");
+    sb.append("END:VTODO\n");
     return sb.toString();
   }
 
@@ -73,7 +73,10 @@ public class OutputIcs extends Output {
 
   private String generateLine(String key, String value) {
     if (value != null && !value.isEmpty()) {
-      return key + ":" + value + "\r\n";
+      if (key.equals("ORGANIZER")) {
+        return key + ";" + value + "\n";
+      }
+      return key + ":" + value + "\n";
     }
     return "";
   }

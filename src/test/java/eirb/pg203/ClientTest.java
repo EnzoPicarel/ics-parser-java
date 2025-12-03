@@ -46,7 +46,9 @@ public class ClientTest {
   void clientMainTodosHtmlFile() throws Exception {
     Path tmp = Files.createTempFile("client-todos", ".ics");
     Client.main(
-        new String[] {"src/test/resources/mixed_events_todos.ics", "todos", "-html", "-o", tmp.toString()});
+        new String[] {
+          "src/test/resources/mixed_events_todos.ics", "todos", "-html", "-o", tmp.toString()
+        });
     String content = Files.readString(tmp);
     assertTrue(content.contains("<tr class=\"todo\">"));
     assertTrue(content.contains("<span class=\"badge badge-todo\">"));
@@ -59,15 +61,15 @@ public class ClientTest {
   void clientMainEventHtmlFile() throws Exception {
     Path tmp = Files.createTempFile("client-todos", ".ics");
     Client.main(
-        new String[] {"src/test/resources/mixed_events_todos.ics", "events", "-html", "-o", tmp.toString()});
+        new String[] {
+          "src/test/resources/mixed_events_todos.ics", "events", "-html", "-o", tmp.toString()
+        });
     String content = Files.readString(tmp);
     assertFalse(content.contains("<tr class=\"todo\">"));
     assertFalse(content.contains("<span class=\"badge badge-todo\">"));
     assertTrue(content.contains("<tr class=\"event\">"));
     assertTrue(content.contains("<span class=\"badge badge-event\">"));
   }
-
-  
 
   @Test
   @DisplayName("Client main override format back to TXT after -ics")

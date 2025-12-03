@@ -3,6 +3,7 @@ package eirb.pg203.model;
 import java.io.IOException;
 import java.io.Reader;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
 
   // partie commune du parsing
   protected Calendar parseStream(Reader reader, String type) throws IOException {
-    Calendar calendar = new Calendar(); 
+    Calendar calendar = new Calendar();
 
     try (IcsReader icsReader =
         new IcsReader(
@@ -35,8 +36,10 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
       while ((line = icsReader.readLine()) != null) {
         // On ne parse que les composants correspondant au type demandé.
         // Ancienne version lisait tout et supposait une homogénéité du fichier.
-        if (line.equals("BEGIN:VEVENT")) { //on ne met plus de condition sur type pour que le parser ne fasse pas de discrimination selon les events
-          //ou les todos : on parse tout et on ajoute au calendrier
+        if (line.equals(
+            "BEGIN:VEVENT")) { // on ne met plus de condition sur type pour que le parser ne fasse
+          // pas de discrimination selon les events
+          // ou les todos : on parse tout et on ajoute au calendrier
           Event event = parseVEvent(icsReader); // icsReader est positionné après BEGIN:VEVENT
           if (event != null) calendar.addComponent(event);
         } else if (line.equals("BEGIN:VTODO")) {
@@ -77,6 +80,7 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
         parseIcsDate(map.get("DUE")),
         parseIcsDate(map.get("LAST-MODIFIED")),
         parseIcsDate(map.get("DTSTAMP")),
+        parseIcsDate(map.get("DTSTART")),
         map.get("STATUS"),
         map.get("CLASS"),
         map.get("SEQUENCE"),
@@ -98,12 +102,12 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
       // on limite le split à 2 pour ne pas couper s'il y a des ':' dans la
       // description
       String[] parts = line.split(":", 2);
-      if (parts.length == 2) {
-        String key =
-            parts[0]
-                .split(";")[
-                0]; // On ignore les paramètres (ex: DTSTART;TZID=...) pour simplifier l'iter 1&2
-        map.put(key, parts[1]);
+      if (parts[0].startsWith("ORGANIZER")) {
+        parts = line.split(";", 2); // ex parts[0] = "ORGANIZER" parts[1] = "CN="Alice":mailto:..."
+        map.put(parts[0], parts[1]);
+      } else if (parts.length == 2) {
+        parts[0] = parts[0].split(";")[0]; // ex parts[0] = DUE;VALUE=DATE -> DUE
+        map.put(parts[0], parts[1]);
       }
     }
     return map;
@@ -112,16 +116,23 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
   protected Instant parseIcsDate(String s) {
     if (s == null || s.isEmpty()) return null;
     try {
-      // gestion basique du format Z (UTC)
-      // pour une gestion complète des Timezones, c'est plus complexe, mais suffisant
-      // pour ce
-      // projet.
-      String cleanDate = s.replace("Z", "");
-      DateTimeFormatter f =
-          DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss").withZone(ZoneId.of("UTC"));
-      return Instant.from(f.parse(cleanDate));
+      // 1. Cas "Date-Heure" (ex: 20251104T204504Z)
+      if (s.contains("T")) {
+        String cleanDate = s.replace("Z", "");
+        DateTimeFormatter f =
+            DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss").withZone(ZoneId.of("UTC"));
+        return Instant.from(f.parse(cleanDate));
+      }
+      // 2. Cas "Date Seule" (ex: 20251107) -> format utilisé par DUE
+      else {
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyyMMdd");
+        // On parse en LocalDate (jour), puis on dit que c'est le début de cette journée en UTC
+        LocalDate date = LocalDate.parse(s, f);
+        return date.atStartOfDay(ZoneId.of("UTC")).toInstant();
+      }
     } catch (Exception e) {
-      // fallback ou gestion de date courte (yyyyMMdd) si nécessaire
+      // En cas d'erreur, on l'affiche pour déboguer au lieu de renvoyer null silencieusement
+      System.err.println("Erreur parsing date : " + s);
       return null;
     }
   }

@@ -20,9 +20,8 @@ public class TodoParserTest {
     assertEquals("5", first.priority);
     assertEquals("100", first.progress);
     assertNotNull(first.completed_date);
-    // Format DUE actuel est YYYYMMDD sans heure -> parseIcsDate retourne null (non
-    // géré)
-    assertNull(first.due_date);
+    // Format DUE actuel est YYYYMMDD sans heure -> parseIcsDate traite ce cas
+    assertNotNull(first.due_date);
   }
 
   @Test
