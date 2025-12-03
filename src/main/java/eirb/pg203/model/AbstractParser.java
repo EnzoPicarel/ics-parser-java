@@ -25,7 +25,7 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
 
   // partie commune du parsing
   protected Calendar parseStream(Reader reader, String type) throws IOException {
-    Calendar calendar = new Calendar(); // Assure-toi d'avoir un constructeur vide ou par défaut
+    Calendar calendar = new Calendar(); 
 
     try (IcsReader icsReader =
         new IcsReader(
@@ -35,10 +35,11 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
       while ((line = icsReader.readLine()) != null) {
         // On ne parse que les composants correspondant au type demandé.
         // Ancienne version lisait tout et supposait une homogénéité du fichier.
-        if (type.equals("events") && line.equals("BEGIN:VEVENT")) {
+        if (line.equals("BEGIN:VEVENT")) { //on ne met plus de condition sur type pour que le parser ne fasse pas de discrimination selon les events
+          //ou les todos : on parse tout et on ajoute au calendrier
           Event event = parseVEvent(icsReader); // icsReader est positionné après BEGIN:VEVENT
           if (event != null) calendar.addComponent(event);
-        } else if (type.equals("todos") && line.equals("BEGIN:VTODO")) {
+        } else if (line.equals("BEGIN:VTODO")) {
           Todo todo = parseVTodo(icsReader);
           if (todo != null) calendar.addComponent(todo);
         }
