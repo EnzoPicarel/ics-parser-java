@@ -28,4 +28,8 @@ public class Event extends CalendarComponent {
     this.description = description;
     this.attendance = attendance;
   }
+
+  public String printWith(Output O) {
+    return O.displayEvent(this);
+  }
 }

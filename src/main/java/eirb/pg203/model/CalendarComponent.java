@@ -19,4 +19,6 @@ public abstract class CalendarComponent {
     this.location = location;
     this.creation_date = creation_date;
   }
+
+  public abstract String printWith(Output O);
 }
