@@ -61,6 +61,7 @@ public class OutputTxt extends Output {
                 Completed: %s
                 Attendance: %s
                 Sequence: %s
+                Organizer: %s
             }
             """,
         formatDate(T.creation_date),
@@ -72,12 +73,13 @@ public class OutputTxt extends Output {
         formatDate(T.completed_date),
         formatDate(T.due_date),
         formatDate(T.modification_date),
-        T.completed,
+        T.status,
         T.attendance,
-        T.sequence);
+        T.sequence,
+        T.organizer);
   }
 
-  private String formatDate(Instant date) {
+  public String formatDate(Instant date) {
     return date != null ? formatter.format(date) : "UNDEFINED";
   }
 }

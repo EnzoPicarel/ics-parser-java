@@ -8,9 +8,11 @@ public class Todo extends CalendarComponent {
   Instant completed_date;
   Instant due_date;
   Instant modification_date;
-  String completed;
+  Instant date_start;
+  String status;
   String attendance;
   String sequence;
+  String organizer;
 
   Todo(
       String uid,
@@ -22,17 +24,25 @@ public class Todo extends CalendarComponent {
       Instant due_date,
       Instant modification_date,
       Instant creation_date,
-      String completed,
+      Instant date_start,
+      String status,
       String attendance,
-      String sequence) {
+      String sequence,
+      String organizer) {
     super(uid, summary, location, creation_date);
     this.priority = priority;
     this.progress = progress;
     this.completed_date = completed_date;
     this.due_date = due_date;
     this.modification_date = modification_date;
-    this.completed = completed;
+    this.status = status;
     this.attendance = attendance;
     this.sequence = sequence;
+    this.organizer = organizer;
+    this.date_start = date_start;
+  }
+
+  public String printWith(Output O) {
+    return O.displayTodo(this);
   }
 }

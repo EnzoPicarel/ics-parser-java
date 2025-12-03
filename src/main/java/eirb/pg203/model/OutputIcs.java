@@ -6,23 +6,21 @@ import java.time.format.DateTimeFormatter;
 
 public class OutputIcs extends Output {
 
-  // Formatteur standard pour ICS : YYYYMMDDTHHMMSSZ (en UTC)
   private static final DateTimeFormatter ICS_DATETIME =
       DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'").withZone(ZoneOffset.UTC);
 
-  // Formatteur pour les dates seules (sans heure) : YYYYMMDD
   private static final DateTimeFormatter ICS_DATE_ONLY =
       DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneOffset.UTC);
 
   @Override
   public String header() {
-    String s = "";
-    s += "BEGIN:VCALENDAR\r\n";
-    s += "VERSION:2.0\r\n";
-    s += "PRODID:-//ADE/version 6.0\r\n";
-    s += "CALSCALE:GREGORIAN\r\n";
-    s += "METHOD:PUBLISH\r\n";
-    return s;
+    return """
+                BEGIN:VCALENDAR\r
+                VERSION:2.0\r
+                PRODID:-//ADE/version 6.0\r
+                CALSCALE:GREGORIAN\r
+                METHOD:PUBLISH\r
+                """;
   }
 
   @Override
@@ -32,78 +30,61 @@ public class OutputIcs extends Output {
 
   @Override
   public String displayEvent(Event e) {
-    String s = "BEGIN:VEVENT\r\n";
+    StringBuilder sb = new StringBuilder();
+    sb.append("BEGIN:VEVENT\n");
 
-    s += generateLine("DTSTAMP", fmt(e.creation_date != null ? e.creation_date : Instant.now()));
-    s += generateLine("UID", e.uid);
+    sb.append(generateLine("DTSTAMP", fmt(e.creation_date)))
+        .append(generateLine("UID", e.uid))
+        .append(generateLine("DTSTART", fmt(e.start_date)))
+        .append(generateLine("DTEND", fmt(e.end_date)))
+        .append(generateLine("SUMMARY", e.summary))
+        .append(generateLine("LOCATION", e.location))
+        .append(generateLine("DESCRIPTION", e.description));
 
-    s += generateLine("DTSTART", fmt(e.start_date));
-    s += generateLine("DTEND", fmt(e.end_date));
-
-    s += generateLine("SUMMARY", escape(e.summary));
-    s += generateLine("LOCATION", escape(e.location));
-    s += generateLine("DESCRIPTION", escape(e.description));
-
-    s += "END:VEVENT\r\n";
-    return s;
+    sb.append("END:VEVENT\n");
+    return sb.toString();
   }
 
   @Override
   public String displayTodo(Todo t) {
-    String s = "BEGIN:VTODO\r\n";
+    StringBuilder sb = new StringBuilder();
+    sb.append("BEGIN:VTODO\n");
 
-    s += generateLine("DTSTAMP", fmt(t.creation_date != null ? t.creation_date : Instant.now()));
-    s += generateLine("UID", t.uid);
+    // Tout est maintenant uniforme via generateLine
+    sb.append(generateLine("DTSTAMP", fmt(t.creation_date)))
+        .append(generateLine("UID", t.uid))
+        .append(generateLine("SUMMARY", t.summary))
+        .append(generateLine("STATUS", t.status))
+        .append(generateLine("DSTART;VALUE=DATE", fmtDate(t.date_start)))
+        .append(generateLine("DUE;VALUE=DATE", fmtDate(t.due_date)))
+        .append(generateLine("COMPLETED", fmt(t.completed_date)))
+        .append(generateLine("LAST-MODIFIED", fmt(t.modification_date)))
+        .append(generateLine("PRIORITY", t.priority))
+        .append(generateLine("PERCENT-COMPLETE", t.progress))
+        .append(generateLine("SEQUENCE", t.sequence))
+        .append(generateLine("CLASS", t.attendance))
+        .append(generateLine("ORGANIZER", t.organizer));
 
-    s += generateLine("SUMMARY", escape(t.summary));
-
-    if (t.due_date != null) {
-      s += "DUE;VALUE=DATE:" + fmtDate(t.due_date) + "\r\n";
-    }
-
-    s += generateLine("COMPLETED", fmt(t.completed_date));
-    s += generateLine("LAST-MODIFIED", fmt(t.modification_date));
-
-    // Propriétés entières / états
-    if (t.priority != null) s += "PRIORITY:" + t.priority + "\r\n";
-    if (t.progress != null) s += "PERCENT-COMPLETE:" + t.progress + "\r\n";
-    if (t.sequence != null) s += "SEQUENCE:" + t.sequence + "\r\n";
-
-    if (Boolean.TRUE.equals(t.completed)) {
-      s += "STATUS:COMPLETED\r\n";
-    }
-
-    s += "END:VTODO\r\n";
-    return s;
+    sb.append("END:VTODO\n");
+    return sb.toString();
   }
 
-  // --- MÉTHODES UTILITAIRES PRIVÉES ---
+  // --- MÉTHODES UTILITAIRES ---
 
-  /** Génère une ligne "CLE:VALEUR\r\n" ou renvoie une chaîne vide si la valeur est nulle. */
   private String generateLine(String key, String value) {
     if (value != null && !value.isEmpty()) {
-      return key + ":" + value + "\r\n";
+      if (key.equals("ORGANIZER")) {
+        return key + ";" + value + "\n";
+      }
+      return key + ":" + value + "\n";
     }
     return "";
   }
-
-  private static String fmt(Instant i) {
-    if (i == null) return null;
-    return ICS_DATETIME.format(i);
+  public static String fmt(Instant i) {
+    return (i == null) ? null : ICS_DATETIME.format(i);
   }
 
-  private static String fmtDate(Instant i) {
-    if (i == null) return null;
-    return ICS_DATE_ONLY.format(i);
-  }
-
-  /** Échappe les caractères spéciaux selon la RFC 5545. */
-  private static String escape(String s) {
-    if (s == null) return null;
-    return s.replace("\\", "\\\\")
-        .replace(";", "\\;")
-        .replace(",", "\\,")
-        .replace("\n", "\\n")
-        .replace("\r", "");
+  public static String fmtDate(Instant i) {
+    return (i == null) ? null : ICS_DATE_ONLY.format(i);
   }
 }
