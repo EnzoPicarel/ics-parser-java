@@ -1,7 +1,6 @@
 package eirb.pg203;
 
 import eirb.pg203.model.*;
-import eirb.pg203.config.*;
 
 public class Client {
   public static void main(String[] args) {

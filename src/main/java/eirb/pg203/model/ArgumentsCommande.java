@@ -1,6 +1,4 @@
-package eirb.pg203.config;
-
-import eirb.pg203.model.*;
+package eirb.pg203.model;
 
 public class ArgumentsCommande {
     public enum ExtractionType { events, todos }

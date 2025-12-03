@@ -1,35 +1,32 @@
 package eirb.pg203.model;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 
 public class MixedIcsBasicTest {
 
-  private static final String ICS_PATH = "src/test/resources/mixed.ics";
+    private static final String ICS_PATH = "src/test/resources/mixed.ics";
 
-  @Test
-  void eventsSelectionLoadsOnlyEvents() {
-    Calendar cal = AbstractParser.chooseParser(ICS_PATH, "events");
-    assertNotNull(cal, "Le calendrier ne doit pas être null");
-    assertFalse(cal.getEvents().isEmpty(), "Doit contenir au moins un VEVENT");
-    assertTrue(cal.getTodos().isEmpty(), "Aucun VTODO attendu quand on demande 'events'");
-  }
+    @Test
+    void parserLoadsEverythingFromMixedFile() {
+        Calendar cal = AbstractParser.chooseParser(ICS_PATH, "events");
+        assertNotNull(cal, "Le calendrier ne doit pas être null");
+        assertFalse(cal.getEvents().isEmpty(), "Le calendrier brut doit contenir les événements");
+        assertFalse(cal.getTodos().isEmpty(), "Le calendrier brut doit AUSSI contenir les todos");
+        
+        // Vérification des quantités (optionnel, selon ton fichier mixed.ics)
+        //assertTrue(cal.getEvents().size() > 0);
+        //assertTrue(cal.getTodos().size() > 0);
+    }
 
-  @Test
-  void todosSelectionLoadsOnlyTodos() {
-    Calendar cal = AbstractParser.chooseParser(ICS_PATH, "todos");
-    assertNotNull(cal, "Le calendrier ne doit pas être null");
-    assertFalse(cal.getTodos().isEmpty(), "Doit contenir au moins un VTODO");
-    assertTrue(cal.getEvents().isEmpty(), "Aucun VEVENT attendu quand on demande 'todos'");
-  }
-
-  @Test
-  void knownEventSummaryIsPresent() {
-    Calendar cal = AbstractParser.chooseParser(ICS_PATH, "events");
-    assertTrue(
-        cal.getEvents().stream()
-            .anyMatch(c -> ((Event) c).summary.equals("Présentation PFA")),
-        "L'événement 'Présentation PFA' doit être présent dans les VEVENTs");
-  }
+    @Test
+    void knownComponentsArePresent() {
+        Calendar cal = AbstractParser.chooseParser(ICS_PATH, "ignored"); 
+        boolean hasEvent = cal.getEvents().stream()
+            .anyMatch(e -> "Présentation PFA".equals(e.summary)); // ou e.getSummary()
+        assertTrue(hasEvent, "L'événement 'Présentation PFA' doit être chargé");
+        boolean hasTodo = cal.getTodos().stream()
+            .anyMatch(t -> "Réviser l'examen de POO".equals(t.summary)); // ou t.getSummary()
+        assertTrue(hasTodo, "Le Todo 'Réviser l'examen de POO' doit être chargé");
+    }
 }
