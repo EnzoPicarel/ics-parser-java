@@ -14,9 +14,9 @@ public class IcsReaderEdgeCasesTest {
   void unfoldingMultipleLines() throws IOException {
     String raw = "DESCRIPTION:Line1\r\n continuation1\r\n continuation2\r\nNEXT:Value\r\n";
     try (IcsReader r = new IcsReader(new StringReader(raw))) {
-      String first = r.readLine();
+      String first = r.readLogicalLine();
       assertEquals("DESCRIPTION:Line1continuation1continuation2", first);
-      String second = r.readLine();
+      String second = r.readLogicalLine();
       assertEquals("NEXT:Value", second);
     }
   }
@@ -25,7 +25,7 @@ public class IcsReaderEdgeCasesTest {
   @DisplayName("Empty reader returns null immediately")
   void emptyReader() throws IOException {
     try (IcsReader r = new IcsReader(new StringReader(""))) {
-      assertNull(r.readLine());
+      assertNull(r.readLogicalLine());
     }
   }
 
@@ -35,10 +35,10 @@ public class IcsReaderEdgeCasesTest {
     // Aucune indentation avant UID -> ne doit pas être fusionné
     String raw = "SUMMARY:Test\r\nDESCRIPTION:Abc\r\nUID:1\r\n";
     try (IcsReader r = new IcsReader(new StringReader(raw))) {
-      assertEquals("SUMMARY:Test", r.readLine());
-      assertEquals("DESCRIPTION:Abc", r.readLine());
-      assertEquals("UID:1", r.readLine());
-      assertNull(r.readLine());
+      assertEquals("SUMMARY:Test", r.readLogicalLine());
+      assertEquals("DESCRIPTION:Abc", r.readLogicalLine());
+      assertEquals("UID:1", r.readLogicalLine());
+      assertNull(r.readLogicalLine());
     }
   }
 }

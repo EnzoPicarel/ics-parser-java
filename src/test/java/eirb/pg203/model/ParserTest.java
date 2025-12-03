@@ -13,14 +13,14 @@ public class ParserTest {
   private static final String ICS_PATH = "src/test/resources/i2.ics";
 
   /**
-   * Utilitaire local pour créer une date attendue (remplace l'ancien
-   * Parser.parseIcsDate statique)
+   * Utilitaire local pour créer une date attendue (remplace l'ancien Parser.parseIcsDate statique)
    */
   private Instant createExpectedDate(String dateStr) {
     try {
       // Adapte le format à celui de tes dates brutes (ex: 20251104T215832Z)
       String cleanDate = dateStr.replace("Z", "");
-      DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss").withZone(ZoneId.of("UTC"));
+      DateTimeFormatter f =
+          DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss").withZone(ZoneId.of("UTC"));
       return Instant.from(f.parse(cleanDate));
     } catch (Exception e) {
       throw new RuntimeException("Erreur format date test", e);

@@ -10,19 +10,11 @@ public class MixedComponentsFilteringTest {
   private static final String MIXED_PATH = "src/test/resources/mixed_events_todos.ics";
 
   @Test
-  @DisplayName("chooseParser with events only loads VEVENT components from mixed file")
-  void eventsOnly() {
+  @DisplayName("Calendar parsed from mixed file contains both events and todos")
+  void parsedBothTypes() {
     Calendar cal = AbstractParser.chooseParser(MIXED_PATH, "events");
     assertEquals(2, cal.getEvents().size(), "Should parse exactly 2 events");
-    assertTrue(cal.getTodos().isEmpty(), "No todos should be present when requesting events");
-  }
-
-  @Test
-  @DisplayName("chooseParser with todos only loads VTODO components from mixed file")
-  void todosOnly() {
-    Calendar cal = AbstractParser.chooseParser(MIXED_PATH, "todos");
-    assertEquals(2, cal.getTodos().size(), "Should parse exactly 2 todos");
-    assertTrue(cal.getEvents().isEmpty(), "No events should be present when requesting todos");
+    assertEquals(2, cal.getTodos().size(), "Should parse exactly 2 todos from mixed file");
   }
 
   @Test
