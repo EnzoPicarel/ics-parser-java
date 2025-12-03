@@ -50,7 +50,6 @@ public class OutputIcs extends Output {
     StringBuilder sb = new StringBuilder();
     sb.append("BEGIN:VTODO\n");
 
-    // Tout est maintenant uniforme via generateLine
     sb.append(generateLine("DTSTAMP", fmt(t.creation_date)))
         .append(generateLine("UID", t.uid))
         .append(generateLine("SUMMARY", t.summary))
@@ -69,8 +68,6 @@ public class OutputIcs extends Output {
     return sb.toString();
   }
 
-  // --- MÉTHODES UTILITAIRES ---
-
   private String generateLine(String key, String value) {
     if (value != null && !value.isEmpty()) {
       if (key.equals("ORGANIZER")) {
@@ -80,6 +77,7 @@ public class OutputIcs extends Output {
     }
     return "";
   }
+
   public static String fmt(Instant i) {
     return (i == null) ? null : ICS_DATETIME.format(i);
   }

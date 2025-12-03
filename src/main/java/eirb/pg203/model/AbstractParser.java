@@ -28,8 +28,9 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
   protected Calendar parseStream(Reader reader, String type) throws IOException {
     Calendar calendar = new Calendar();
 
-    try (IcsReader icsReader = new IcsReader(
-        reader)) { // utilisation de la classe IcsReader pour gérer les lignes continues ->
+    try (IcsReader icsReader =
+        new IcsReader(
+            reader)) { // utilisation de la classe IcsReader pour gérer les lignes continues ->
       // intéret de AutoCloseable
       String line;
       while ((line = icsReader.readLogicalLine()) != null) {
@@ -37,12 +38,10 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
         // Le filtrage se fera plus tard (getEvents() ou getTodos())
         if (line.equals("BEGIN:VEVENT")) {
           Event event = parseVEvent(icsReader); // icsReader est positionné après BEGIN:VEVENT
-          if (event != null)
-            calendar.addComponent(event);
+          if (event != null) calendar.addComponent(event);
         } else if (line.equals("BEGIN:VTODO")) {
           Todo todo = parseVTodo(icsReader);
-          if (todo != null)
-            calendar.addComponent(todo);
+          if (todo != null) calendar.addComponent(todo);
         }
       }
     }
@@ -52,8 +51,7 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
   // parsing des event
   private Event parseVEvent(IcsReader r) throws IOException {
     Map<String, String> map = parseComponentProperties(r, "VEVENT");
-    if (map.isEmpty())
-      return null;
+    if (map.isEmpty()) return null;
     return new Event(
         map.get("UID"),
         map.get("SUMMARY"),
@@ -68,8 +66,7 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
   // parsing des todos
   private Todo parseVTodo(IcsReader r) throws IOException {
     Map<String, String> map = parseComponentProperties(r, "VTODO");
-    if (map.isEmpty())
-      return null;
+    if (map.isEmpty()) return null;
     return new Todo(
         map.get("UID"),
         map.get("SUMMARY"),
@@ -114,13 +111,13 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
   }
 
   protected Instant parseIcsDate(String s) {
-    if (s == null || s.isEmpty())
-      return null;
+    if (s == null || s.isEmpty()) return null;
     try {
       // 1. Cas "Date-Heure" (ex: 20251104T204504Z)
       if (s.contains("T")) {
         String cleanDate = s.replace("Z", "");
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss").withZone(ZoneId.of("UTC"));
+        DateTimeFormatter f =
+            DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss").withZone(ZoneId.of("UTC"));
         return Instant.from(f.parse(cleanDate));
       }
       // 2. Cas "Date Seule" (ex: 20251107) -> format utilisé par DUE
