@@ -80,12 +80,11 @@ public class OutputIcs extends Output {
     }
     return "";
   }
-
-  private static String fmt(Instant i) {
+  public static String fmt(Instant i) {
     return (i == null) ? null : ICS_DATETIME.format(i);
   }
 
-  private static String fmtDate(Instant i) {
+  public static String fmtDate(Instant i) {
     return (i == null) ? null : ICS_DATE_ONLY.format(i);
   }
 }

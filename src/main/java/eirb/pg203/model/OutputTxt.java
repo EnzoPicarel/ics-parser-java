@@ -79,7 +79,7 @@ public class OutputTxt extends Output {
         T.organizer);
   }
 
-  private String formatDate(Instant date) {
+  public String formatDate(Instant date) {
     return date != null ? formatter.format(date) : "UNDEFINED";
   }
 }
