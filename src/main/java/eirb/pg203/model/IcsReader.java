@@ -4,34 +4,34 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
-// classe utilitaire pour lire les fichiers ICS en gérant les lignes continues
 public class IcsReader implements AutoCloseable {
   private final BufferedReader reader;
-  private String nextLine = null;
+  private String bufferedLine = null;
 
   public IcsReader(Reader reader) {
     this.reader = new BufferedReader(reader);
   }
 
-  // lit une ligne complète du fichier ICS
-  public String readLine() throws IOException {
-    String line = (nextLine != null) ? nextLine : reader.readLine();
-    nextLine = null;
+  public String readLogicalLine() throws IOException {
+    String logicalLine = (bufferedLine != null) ? bufferedLine : reader.readLine();
+    bufferedLine = null;
 
-    if (line == null) return null;
+    if (logicalLine == null) return null;
 
     while (true) {
       String next = reader.readLine();
-      if (next != null && (next.startsWith(" ") || next.startsWith("\t"))) {
-        // c'est une suite de ligne, on concatène (en sautant l'espace)
-        line += next.substring(1);
+      if (next != null && isContinuation(next)) {
+        logicalLine += next.substring(1);
       } else {
-        // c'est une nouvelle ligne, on la garde pour le prochain appel
-        nextLine = next;
+        bufferedLine = next;
         break;
       }
     }
-    return line;
+    return logicalLine;
+  }
+
+  private boolean isContinuation(String line) {
+    return line.startsWith(" ") || line.startsWith("\t");
   }
 
   @Override

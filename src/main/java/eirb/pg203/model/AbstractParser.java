@@ -25,20 +25,20 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
 
   // partie commune du parsing
   protected Calendar parseStream(Reader reader, String type) throws IOException {
-    Calendar calendar = new Calendar(); // Assure-toi d'avoir un constructeur vide ou par défaut
+    Calendar calendar = new Calendar();
 
     try (IcsReader icsReader =
         new IcsReader(
             reader)) { // utilisation de la classe IcsReader pour gérer les lignes continues ->
       // intéret de AutoCloseable
       String line;
-      while ((line = icsReader.readLine()) != null) {
-        // On ne parse que les composants correspondant au type demandé.
-        // Ancienne version lisait tout et supposait une homogénéité du fichier.
-        if (type.equals("events") && line.equals("BEGIN:VEVENT")) {
+      while ((line = icsReader.readLogicalLine()) != null) {
+        // Parse TOUS les composants, indépendamment du type demandé
+        // Le filtrage se fera plus tard (getEvents() ou getTodos())
+        if (line.equals("BEGIN:VEVENT")) {
           Event event = parseVEvent(icsReader); // icsReader est positionné après BEGIN:VEVENT
           if (event != null) calendar.addComponent(event);
-        } else if (type.equals("todos") && line.equals("BEGIN:VTODO")) {
+        } else if (line.equals("BEGIN:VTODO")) {
           Todo todo = parseVTodo(icsReader);
           if (todo != null) calendar.addComponent(todo);
         }
@@ -88,7 +88,7 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
     String line;
     String endTag = "END:" + componentName;
 
-    while ((line = r.readLine()) != null) {
+    while ((line = r.readLogicalLine()) != null) {
       if (line.equals(endTag)) {
         break;
       }
