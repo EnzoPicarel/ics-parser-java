@@ -31,13 +31,13 @@ public class TodoParserTest {
     Calendar cal = AbstractParser.chooseParser("src/test/resources/todos_mixed.ics", "todos");
     List<Todo> todos = cal.getTodos();
     assertEquals(3, todos.size());
-    assertTrue(todos.stream().anyMatch(t -> "COMPLETED".equals(t.completed)));
+    assertTrue(todos.stream().anyMatch(t -> "COMPLETED".equals(t.status)));
     assertTrue(
-        todos.stream().anyMatch(t -> "IN-PROCESS".equals(t.completed))
+        todos.stream().anyMatch(t -> "IN-PROCESS".equals(t.status))
             || todos.stream()
                 .anyMatch(
                     t -> "IN-PROCESS".equals(t.attendance))); // status stored in completed field
-    assertTrue(todos.stream().anyMatch(t -> "NEEDS-ACTION".equals(t.completed)));
+    assertTrue(todos.stream().anyMatch(t -> "NEEDS-ACTION".equals(t.status)));
   }
 
   @Test

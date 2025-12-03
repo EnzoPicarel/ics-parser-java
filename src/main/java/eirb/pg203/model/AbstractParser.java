@@ -78,7 +78,8 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
         parseIcsDate(map.get("DTSTAMP")),
         map.get("STATUS"),
         map.get("CLASS"),
-        map.get("SEQUENCE"));
+        map.get("SEQUENCE"),
+        map.get("ORGANIZER"));
   }
 
   // remplit une map tant qu'on n'a pas atteint la balise de fin

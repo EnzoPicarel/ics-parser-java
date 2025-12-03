@@ -14,38 +14,30 @@ public abstract class Output {
   public abstract String displayTodo(Todo T);
 
   public void displayCalendar(Calendar C, String file) {
+    // 1. Étape de Construction : On accumule tout le texte en mémoire
+    StringBuilder sb = new StringBuilder();
+
+    sb.append(header());
+
+    for (CalendarComponent CD : C.getAllComponents()) {
+      sb.append(CD.printWith(this));
+    }
+
+    sb.append(footer());
+
+    // 2. Étape de Sortie : On décide où envoyer le texte final
+    String finalOutput = sb.toString();
+
     if (file == null || file.isEmpty()) {
-
-      System.out.print(header());
-
-      for (CalendarComponent CD : C.getAllComponents()) {
-        if (CD instanceof Event) {
-          System.out.print(displayEvent((Event) CD));
-        } else {
-          System.out.print(displayTodo((Todo) CD));
-        }
-      }
-      System.out.print(footer());
-
+      // Mode Console
+      System.out.print(finalOutput);
     } else {
       // Mode Fichier
       try (FileWriter writer = new FileWriter(file)) {
-        writer.write(header());
-
-        for (CalendarComponent CD : C.getAllComponents()) {
-          String data;
-          if (CD instanceof Event) {
-            data = displayEvent((Event) CD);
-          } else {
-            data = displayTodo((Todo) CD);
-          }
-          writer.write(data);
-        }
-
-        writer.write(footer());
-        writer.close();
+        writer.write(finalOutput);
+        // Pas besoin de writer.close() ici car tu utilises le "try-with-resources"
       } catch (IOException e) {
-        System.out.println("An error occurred while writing the file.");
+        System.err.println("An error occurred while writing the file: " + file);
         e.printStackTrace();
       }
     }
