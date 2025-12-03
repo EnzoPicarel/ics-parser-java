@@ -2,6 +2,7 @@ package eirb.pg203.model;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -10,9 +11,8 @@ public class ParserURL extends AbstractParser {
   @Override
   public Calendar parse(String urlString, String type) {
     try {
-      URL url = new URL(urlString);
-      URLConnection connection = url.openConnection(); // connection à l'url
-      // on utilise InputStreamReader pour convertir les bytes du réseau en caractères
+      URL url = URI.create(urlString).toURL();
+      URLConnection connection = url.openConnection();
       try (InputStreamReader reader = new InputStreamReader(connection.getInputStream())) {
         return parseStream(reader, type);
       }
