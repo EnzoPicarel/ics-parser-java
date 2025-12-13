@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+//vérifie que le fichier de sortie est bien créé sur le disque
 public class OutputGenerationTest {
 
   @Test
