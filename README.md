@@ -57,6 +57,49 @@ Le rapport se trouve dans `build/reports/jacoco/test/html/index.html`.
 
 ## Lancement du programme
 
+```bash
+./gradlew run --args "<input-file> <events|todos> [options]"
 ```
-./gradlew run --args="arg1 arg2"
+
+### Exemples pratiques
+
+- Afficher des événements (texte) pour une plage de dates (stdout) :
+
+```bash
+./gradlew run --args "src/test/resources/events_minimal.ics events -txt -from 20251106 -to 20251106"
 ```
+
+- Exporter en HTML dans `out_events.html` :
+
+```bash
+./gradlew run --args "src/test/resources/events_minimal.ics events -html -o out_events.html -from 20251106 -to 20251106"
+head -n 20 out_events.html
+```
+
+- Exporter en ICS dans `out_events.ics` :
+
+```bash
+./gradlew run --args "src/test/resources/events_minimal.ics events -ics -o out_events.ics -from 20251106 -to 20251106"
+sed -n '1,120p' out_events.ics
+```
+
+- Lister tous les todos en texte dans `out_todos.txt` :
+
+```bash
+./gradlew run --args "src/test/resources/todos.ics todos -txt -all -o out_todos.txt"
+head -n 60 out_todos.txt
+```
+
+- Exemple d'invocation invalide (affiche l'aide et renvoie une erreur) :
+
+```bash
+./gradlew run --args "src/test/resources/events_minimal.ics"
+# => Affiche usage puis erreur
+```
+
+Options utiles :
+
+- `-from YYYYMMDD -to YYYYMMDD` (pour `events`, les deux sont requis)
+- `-today`, `-tomorrow`, `-week` (pour `events`)
+- `-all`, `-incomplete`, `-completed`, `-inprocess`, `-needsaction` (pour `todos`)
+- formats de sortie : `-txt` (par défaut), `-html`, `-ics`; utilisez `-o FILE` pour écrire dans un fichier plutôt que stdout.
