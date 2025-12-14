@@ -1,48 +1,48 @@
 package eirb.pg203.model;
 
-import org.junit.jupiter.api.Test;
-import java.time.Instant;
 import static org.junit.jupiter.api.Assertions.*;
 
-//sert à tester la couverture des classes Event, Todo et Calendar
-//jacoco considère qu'une classe n'est pas couverte si on n'a pas appelé son constructeur ou 
-//si on n'a pas accédé à au moins un de ses champs
+import java.time.Instant;
+import org.junit.jupiter.api.Test;
+
+// sert à tester la couverture des classes Event, Todo et Calendar
+// jacoco considère qu'une classe n'est pas couverte si on n'a pas appelé son constructeur ou
+// si on n'a pas accédé à au moins un de ses champs
 class ModelCoverageTest {
 
-    @Test
-    void testEventConstructorAndFields() {
-        String uid = "event-1";
-        String summary = "Event Summary";
-        String location = "Event Location";
-        Instant now = Instant.now();
-        String desc = "Description";
-        String att = "Attendance";
+  @Test
+  void testEventConstructorAndFields() {
+    String uid = "event-1";
+    String summary = "Event Summary";
+    String location = "Event Location";
+    Instant now = Instant.now();
+    String desc = "Description";
+    String att = "Attendance";
 
-        Event event = new Event(
-            uid, summary, location, now, now, now, desc, att
-        );
+    Event event = new Event(uid, summary, location, now, now, now, desc, att);
 
-        assertEquals(uid, event.uid);
-        assertEquals(summary, event.summary);
-        assertEquals(now, event.creation_date);
-        assertEquals(desc, event.description);
-        assertEquals(att, event.attendance);
-    }
+    assertEquals(uid, event.uid);
+    assertEquals(summary, event.summary);
+    assertEquals(now, event.creation_date);
+    assertEquals(desc, event.description);
+    assertEquals(att, event.attendance);
+  }
 
-    @Test
-    void testTodoConstructorAndFields() {
-        String uid = "todo-1";
-        String summary = "Faire le ménage";
-        String location = "Maison";
-        String priority = "1";
-        String progress = "50";
-        Instant now = Instant.now();
-        String status = "IN-PROCESS";
-        String attendance = "PUBLIC";
-        String sequence = "0";
-        String organizer = "mailto:alice@example.com";
+  @Test
+  void testTodoConstructorAndFields() {
+    String uid = "todo-1";
+    String summary = "Faire le ménage";
+    String location = "Maison";
+    String priority = "1";
+    String progress = "50";
+    Instant now = Instant.now();
+    String status = "IN-PROCESS";
+    String attendance = "PUBLIC";
+    String sequence = "0";
+    String organizer = "mailto:alice@example.com";
 
-        Todo todo = new Todo(
+    Todo todo =
+        new Todo(
             uid,
             summary,
             location,
@@ -56,46 +56,42 @@ class ModelCoverageTest {
             status,
             attendance,
             sequence,
-            organizer
-        );
+            organizer);
 
-        assertEquals(uid, todo.uid);
-        assertEquals(summary, todo.summary);
-        assertEquals(location, todo.location);
-        
-        assertEquals(priority, todo.priority);
-        assertEquals(progress, todo.progress);
-        assertEquals(now, todo.completed_date);
-        assertEquals(now, todo.due_date);
-        assertEquals(now, todo.modification_date);
-        assertEquals(now, todo.creation_date);
-        assertEquals(now, todo.date_start);
-        assertEquals(status, todo.status);
-        assertEquals(attendance, todo.attendance);
-        assertEquals(sequence, todo.sequence);
-        assertEquals(organizer, todo.organizer);
-    }
+    assertEquals(uid, todo.uid);
+    assertEquals(summary, todo.summary);
+    assertEquals(location, todo.location);
 
-    @Test
-    void testCalendarOperations() {
-        Calendar cal = new Calendar();
-        assertTrue(cal.getAllComponents().isEmpty());
+    assertEquals(priority, todo.priority);
+    assertEquals(progress, todo.progress);
+    assertEquals(now, todo.completed_date);
+    assertEquals(now, todo.due_date);
+    assertEquals(now, todo.modification_date);
+    assertEquals(now, todo.creation_date);
+    assertEquals(now, todo.date_start);
+    assertEquals(status, todo.status);
+    assertEquals(attendance, todo.attendance);
+    assertEquals(sequence, todo.sequence);
+    assertEquals(organizer, todo.organizer);
+  }
 
-        Instant now = Instant.now();
-        
-        Event e = new Event("1", "S", "L", now, now, now, "D", "A");
-        
-        Todo t = new Todo(
-            "2", "Sum", "Loc", "1", "0", 
-            now, now, now, now, now, 
-            "Stat", "Att", "0", "Org"
-        );
-        
-        cal.addComponent(e);
-        cal.addComponent(t);
+  @Test
+  void testCalendarOperations() {
+    Calendar cal = new Calendar();
+    assertTrue(cal.getAllComponents().isEmpty());
 
-        assertEquals(2, cal.getAllComponents().size());
-        assertEquals(1, cal.getEvents().size());
-        assertEquals(1, cal.getTodos().size());
-    }
+    Instant now = Instant.now();
+
+    Event e = new Event("1", "S", "L", now, now, now, "D", "A");
+
+    Todo t =
+        new Todo("2", "Sum", "Loc", "1", "0", now, now, now, now, now, "Stat", "Att", "0", "Org");
+
+    cal.addComponent(e);
+    cal.addComponent(t);
+
+    assertEquals(2, cal.getAllComponents().size());
+    assertEquals(1, cal.getEvents().size());
+    assertEquals(1, cal.getTodos().size());
+  }
 }
