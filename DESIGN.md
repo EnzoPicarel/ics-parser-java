@@ -26,21 +26,55 @@ On utilise la classe abstraite Output pour diviser l'affichage (header, footer, 
 
 La classe abstraite AbstractParser permet de définir la méthode abstraite parse. ParserFile et ParserUrl implémentent cette méthode afin de manipuler séparément des fichiers locaux et les URL. La méthode statique chooseParser permet de retourner le bon parser selon le type de fichier d'entrée. CalendarApplication utilise ainsi le type abstrait AbstractParser sans connaître l'origine du parser.
 
-
-A FAIRE: parler des filtres events et todos avec la méthode abstraite filter, 
+Les filtres sont définis par des classes abstraites (EventFilter, TodoFilter). A l'exécution, différentes implémentations concrètes (TodayFilter, DateRangeFilter, IncompleteFilter) sont appelées dynamiquement selon les arguments de l'utilisateur.
 
 ## Utilisation de la déléguation
 
 Comment utilisez-vous la délégation dans votre programme?
 
+La délégation est utilisée pour séparer les responsabilités les classes principales : 
+    - Lecture de fichier : le parser ne gère pas la complexité technique du format ICS. Il délègue la lecture ligne pas ligne à la classe IcsReader.
+
+    - Affichage : pour l'affichage, nous utilisons la délégation via la méthode printWith. L'objet métier (Event) ne contient pas la logique d'affichage, il délègue cette tâche à l'objet Output en lui passant sa propre instance.
+
+    - Orchestration : La classe Client ne fait aucun traitement sur les objets métiers directement. Elle délègue le parsing à AbstractParser, le filtrage aux classes Filter, et l'affichage à Output.
+
+
 ## Utilisation de l'héritage
 
 Comment utilisez-vous l'héritage dans votre programme?
+
+L'héritage est utilisé pour factoriser le code commun : 
+ - CaldendarComponent : sert de classe mère pour Event ou Todo, regroupant les attributs partagés (UID, LOCATION, DTSTAMP, SUMMARY). Cela évite la duplication de code dans les classes filles.
+
+ - AbstractParser : Cette classe abstraite définit l'algorithme global de parsing (parseStream) qui contient la boucle principale et la détection des balises. Les classes filles (ParserFile, ParserURL) n'ont qu'à implémenter la méthode parse et héritent ainsi de la logique de traitement.
+
+ - Output : fournit une implémentation pas défaut pour l'organisation de l'affichage (displayCalendar), forçant les sous-classes à implémenter uniquement les méthodes spécifiques de formatage des composants. 
 
 ## Utilisation de la généricité
 
 Comment utilisez-vous la généricité dans votre programme?
 
+Utilisation de List<CalendarComponent> pour stocker une collection
+hétérogène d'éléments dans le calendrier.
+
+Utilisation de List<Event> et List<Todo> dans les méthodes de filtrage et d'accès pour manipuler des sous-ensembles typés sans avoir besoin de faire des cast. 
+
+
 ## Utilisation des exceptions
 
 Comment utilisez-vous les exceptions dans votre programme?
+
+Problèmes techniques : Les erreurs d'entrées / sorties (IOException, FileNotFOundEXception) son gérées explicitement. Par exemple, si un fichier est introuvable, l'exception est capturée et transformée en un message d'erreur. 
+
+Erreurs d'utilisation : Les erreurs de configuration (arguments invalides, dates malformées) déclenchent des IllegalArgumentException dans ArgumentParser. Ces exceptions affichent un message d'aide et termine le programme avec un code d'erreur. 
+
+
+
+
+
+
+
+
+
+            
