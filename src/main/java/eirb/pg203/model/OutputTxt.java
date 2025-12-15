@@ -6,8 +6,8 @@ import java.time.format.DateTimeFormatter;
 
 public class OutputTxt extends Output {
 
-  private final DateTimeFormatter formatter =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault());
+  private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+      .withZone(ZoneId.systemDefault());
 
   @Override
   public String header() {
@@ -55,6 +55,7 @@ public class OutputTxt extends Output {
                 Location: %s
                 Priority: %s
                 Progress: %s
+                Start Date: %s
                 Completed Date: %s
                 Due Date: %s
                 Modification Date: %s
@@ -70,6 +71,7 @@ public class OutputTxt extends Output {
         (T.location != null ? T.location : ""),
         T.priority,
         T.progress,
+        formatDate(T.start_date),
         formatDate(T.completed_date),
         formatDate(T.due_date),
         formatDate(T.modification_date),
