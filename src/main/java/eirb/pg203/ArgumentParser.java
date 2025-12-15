@@ -42,7 +42,7 @@ public class ArgumentParser {
         case "-ics":
           outputGenerator = new OutputIcs();
           break;
-        case "-txt":
+        case "-text":
           outputGenerator = new OutputTxt();
           break;
         case "-html":
@@ -262,7 +262,7 @@ public class ArgumentParser {
     System.err.println("  -inprocess      Show in-process todos");
     System.err.println("  -needsaction    Show todos needing action");
     System.err.println("Output options:");
-    System.err.println("  -txt            Text output (default)");
+    System.err.println("  -text            Text output (default)");
     System.err.println("  -ics            ICS format output");
     System.err.println("  -html           HTML format output");
     System.err.println("  -o FILE         Output to file (default: stdout)");

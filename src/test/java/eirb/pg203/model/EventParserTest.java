@@ -67,7 +67,7 @@ public class EventParserTest {
   void outputTxtEvent() throws Exception {
     Calendar cal = AbstractParser.chooseParser("src/test/resources/events_minimal.ics", "events");
     Output out = new OutputTxt();
-    Path tmp = Files.createTempFile("event-txt", ".txt");
+    Path tmp = Files.createTempFile("event-text", ".txt");
     out.displayCalendar(cal, tmp.toString());
     String content = Files.readString(tmp);
     assertTrue(content.startsWith("["));

@@ -66,7 +66,7 @@ Le rapport se trouve dans `build/reports/jacoco/test/html/index.html`.
 - Afficher des événements (texte) pour une plage de dates (stdout) :
 
 ```bash
-./gradlew run --args "src/test/resources/events_minimal.ics events -txt -from 20251106 -to 20251106"
+./gradlew run --args "src/test/resources/events_minimal.ics events -text -from 20251106 -to 20251106"
 ```
 
 - Exporter en HTML dans `out_events.html` :
@@ -84,7 +84,7 @@ Le rapport se trouve dans `build/reports/jacoco/test/html/index.html`.
 - Lister tous les todos en texte dans `out_todos.txt` :
 
 ```bash
-./gradlew run --args "src/test/resources/todos.ics todos -txt -all -o out_todos.txt"
+./gradlew run --args "src/test/resources/todos.ics todos -text -all -o out_todos.txt"
 ```
 
 - Exemple d'invocation invalide (affiche l'aide et renvoie une erreur) :
@@ -99,4 +99,4 @@ Options utiles :
 - `-from YYYYMMDD -to YYYYMMDD` (pour `events`, les deux sont requis)
 - `-today`, `-tomorrow`, `-week` (pour `events`)
 - `-all`, `-incomplete`, `-completed`, `-inprocess`, `-needsaction` (pour `todos`)
-- formats de sortie : `-txt` (par défaut), `-html`, `-ics`; utilisez `-o FILE` pour écrire dans un fichier plutôt que stdout.
+- formats de sortie : `-text` (par défaut), `-html`, `-ics`; utilisez `-o FILE` pour écrire dans un fichier plutôt que stdout.

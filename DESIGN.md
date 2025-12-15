@@ -22,7 +22,7 @@ Le polymorphisme se manifeste à plusieurs niveaux :
 
 CalendarComponent est une classe abstraite avec la méthode abstraite printWith(Output O). Event et Todo héritent de CalendarComponent et ils overrident chacun printWith() pour déléguer l'affichage au générateur de sortie approprié. Calendar peut ainsi stocker une liste hétérogène de CalendarComponent et appeler printWith() sans connaître le type concret. De plus, cela permet d'obliger les nouvelles sous-classes de CalendarComponents à gérer leur affichages, permettant une bonne continuité du code et le respect des principes de POO.
 
-On utilise la classe abstraite Output pour diviser l'affichage (header, footer, contenu) en plusieurs format et selon divers composant de calendrier (displayEvent, displayTodo). CalendarApplication utilise ainsi uniquement le type apparent de l'Output sans connaître le type réel (décidé par l'ArgumentParser selon les options passé en ligne de commande (-txt, -ics, -html)).
+On utilise la classe abstraite Output pour diviser l'affichage (header, footer, contenu) en plusieurs format et selon divers composant de calendrier (displayEvent, displayTodo). CalendarApplication utilise ainsi uniquement le type apparent de l'Output sans connaître le type réel (décidé par l'ArgumentParser selon les options passé en ligne de commande (-text, -ics, -html)).
 
 La classe abstraite AbstractParser permet de définir la méthode abstraite parse. ParserFile et ParserUrl implémentent cette méthode afin de manipuler séparément des fichiers locaux et les URL. La méthode statique chooseParser permet de retourner le bon parser selon le type de fichier d'entrée. CalendarApplication utilise ainsi le type abstrait AbstractParser sans connaître l'origine du parser.
 
