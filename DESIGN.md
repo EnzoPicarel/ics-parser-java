@@ -24,7 +24,7 @@ CalendarComponent est une classe abstraite avec la méthode abstraite printWith(
 
 On utilise la classe abstraite Output pour diviser l'affichage (header, footer, contenu) en plusieurs format et selon divers composant de calendrier (displayEvent, displayTodo). CalendarApplication utilise ainsi uniquement le type apparent de l'Output sans connaître le type réel (décidé par l'ArgumentParser selon les options passé en ligne de commande (-text, -ics, -html)).
 
-La classe abstraite AbstractParser permet de définir la méthode abstraite parse. ParserFile et ParserUrl implémentent cette méthode afin de manipuler séparément des fichiers locaux et les URL. La méthode statique chooseParser permet de retourner le bon parser selon le type de fichier d'entrée. CalendarApplication utilise ainsi le type abstrait AbstractParser sans connaître l'origine du parser.
+La classe abstraite AbstractParser permet de définir la méthode abstraite parse. ParserFile et ParserUrl implémentent cette méthode afin de manipuler séparément des fichiers locaux et les URL. La méthode statique chooseParser permet de retourner le bon parser selon le type de fichier d'entrée (Fabrique : la méthode statique chooseParser fabrique l'instance concrète). CalendarApplication utilise ainsi le type abstrait AbstractParser sans connaître l'origine du parser.
 
 Les filtres sont définis par des classes abstraites (EventFilter, TodoFilter). A l'exécution, différentes implémentations concrètes (TodayFilter, DateRangeFilter, IncompleteFilter) sont appelées dynamiquement selon les arguments de l'utilisateur.
 
@@ -32,12 +32,12 @@ Les filtres sont définis par des classes abstraites (EventFilter, TodoFilter). 
 
 Comment utilisez-vous la délégation dans votre programme?
 
-La délégation est utilisée pour séparer les responsabilités les classes principales : 
+La délégation est utilisée pour séparer les responsabilités des classes principales : 
     - Lecture de fichier : le parser ne gère pas la complexité technique du format ICS. Il délègue la lecture ligne pas ligne à la classe IcsReader.
 
     - Affichage : pour l'affichage, nous utilisons la délégation via la méthode printWith. L'objet métier (Event) ne contient pas la logique d'affichage, il délègue cette tâche à l'objet Output en lui passant sa propre instance.
 
-    - Orchestration : La classe Client ne fait aucun traitement sur les objets métiers directement. Elle délègue le parsing à AbstractParser, le filtrage aux classes Filter, et l'affichage à Output.
+    - Orchestration : La classe Client ne fait aucun traitement sur les objets métiers (Event, Todo) directement. Elle délègue le parsing à AbstractParser, le filtrage aux classes Filter, et l'affichage à Output.
 
 
 ## Utilisation de l'héritage
@@ -55,16 +55,19 @@ L'héritage est utilisé pour factoriser le code commun :
 
 Comment utilisez-vous la généricité dans votre programme?
 
-Utilisation de List<CalendarComponent> pour stocker une collection
-hétérogène d'éléments dans le calendrier.
+La généricité est utilisée dans notre application dans les cas suivants : 
 
-Utilisation de List<Event> et List<Todo> dans les méthodes de filtrage et d'accès pour manipuler des sous-ensembles typés sans avoir besoin de faire des cast. 
+ - Utilisation de List<CalendarComponent> pour stocker une collection hétérogène d'éléments dans le calendrier.
+
+ - Utilisation de List<Event> et List<Todo> dans les méthodes de filtrage et d'accès pour manipuler des sous-ensembles typés sans avoir besoin de faire des cast. 
 
 
 ## Utilisation des exceptions
 
 Comment utilisez-vous les exceptions dans votre programme?
 
-Problèmes techniques : Les erreurs d'entrées / sorties (IOException, FileNotFOundEXception) son gérées explicitement. Par exemple, si un fichier est introuvable, l'exception est capturée et transformée en un message d'erreur. 
+On utilise les exceptions pour gérer deux types d'erreurs : 
 
-Erreurs d'utilisation : Les erreurs de configuration (arguments invalides, dates malformées) déclenchent des IllegalArgumentException dans ArgumentParser. Ces exceptions affichent un message d'aide et termine le programme avec un code d'erreur.
+ - Problèmes techniques : Les erreurs d'entrées / sorties (IOException, FileNotFOundEXception) son gérées explicitement. Par exemple, si un fichier est introuvable, l'exception est capturée et transformée en un message d'erreur. 
+
+ - Erreurs d'utilisation : Les erreurs de configuration (arguments invalides, dates malformées) déclenchent des IllegalArgumentException dans ArgumentParser. Ces exceptions affichent un message d'aide et termine le programme avec un code d'erreur.
