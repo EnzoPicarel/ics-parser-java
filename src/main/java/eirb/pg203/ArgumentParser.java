@@ -85,7 +85,7 @@ public class ArgumentParser {
             return null;
           }
           if (hasTimeFilter) {
-            System.err.println("Error: time filters are not cumulative");
+            System.err.println("Error: tTomorrowFilterime filters are not cumulative");
             return null;
           }
           eventFilter = new EventFilter.WeekFilter();

@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractParser { // abstract donc on peut pa l'instancier
+public abstract class AbstractParser {
   public static Calendar chooseParser(
       String source,
       String type) { // static car sert de factory => fabrique l'instance, doit être accessible sans
@@ -136,5 +136,5 @@ public abstract class AbstractParser { // abstract donc on peut pa l'instancier
     }
   }
 
-  public abstract Calendar parse(String source, String type); // méthode abstraite
+  public abstract Calendar parse(String source, String type);
 }

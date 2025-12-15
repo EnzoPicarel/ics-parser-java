@@ -1,0 +1,128 @@
+@startuml
+' Packages
+package "eirb.pg203" {
+  class Client
+  class CalendarApplication
+  class ArgumentParser
+  class CliConfig
+  ' Parser = util / legacy (commentaire OK)
+}
+
+package "eirb.pg203.model" {
+  abstract class AbstractParser
+  class ParserFile
+  class ParserURL
+  class IcsReader
+
+  class Calendar {
+    - List<CalendarComponent> components
+    + addComponent(...)
+    + getAllComponents(): List
+    + getEvents(): List
+    + getTodos(): List
+  }
+
+  abstract class CalendarComponent {
+    # uid : String
+    # summary : String
+    # location : String
+  }
+
+  class Event {
+    + uid : String
+    + summary : String
+    + location : String
+    + creation_date : Instant
+    + start_date : Instant
+    + end_date : Instant
+    + description : String
+  }
+
+  class Todo {
+    + uid : String
+    + summary : String
+    + location : String
+    + priority : String
+    + progress : String
+    + completed_date : Instant
+    + due_date : Instant
+    + modification_date : Instant
+    + creation_date : Instant
+    + date_start : Instant
+    + status : String
+    + sequence : String
+    + organizer : String
+  }
+
+  abstract class Output {
+    + header()
+    + footer()
+    + displayCalendar(Calendar, String)
+    + displayEvent(Event)
+    + displayTodo(Todo)
+  }
+  class OutputTxt
+  class OutputIcs
+  class OutputHtml
+
+  class EventFilter
+  class TodoFilter
+}
+
+' Inheritance / Implementation
+AbstractParser <|-- ParserFile
+AbstractParser <|-- ParserURL
+
+CalendarComponent <|-- Event
+CalendarComponent <|-- Todo
+
+Output <|-- OutputTxt
+Output <|-- OutputIcs
+Output <|-- OutputHtml
+
+' Associations / usages
+Client --> CalendarApplication : uses
+CalendarApplication --> ArgumentParser : uses
+ArgumentParser --> CliConfig : produces
+CalendarApplication --> AbstractParser : chooses
+AbstractParser --> IcsReader : uses
+AbstractParser --> Calendar : returns
+Calendar "1" *-- "*" CalendarComponent
+
+EventFilter ..> Event
+TodoFilter ..> Todo
+
+' CliConfig choisit/porte le générateur de sortie
+CliConfig o-- Output : outputGenerator
+
+' Si vous avez CalendarComponent.printWith(Output)
+CalendarComponent ..> Output : printWith(o)
+
+' Tests package (simplified)
+package "test (src/test/java)" {
+  note as Tests
+    tests (eirb.pg203):
+    - ArgumentParserTest
+    - ClientCoverageTest
+
+    tests (eirb.pg203.model):
+    - EventParserTest
+    - FilterLogicTest
+    - IcsReaderEdgeCasesTest
+    - MixedComponentsFilteringTest
+    - MixedIcsBasicTest
+    - ModelCoverageTest
+    - OutputFormatsTest
+    - OutputGenerationTest
+    - ParserFileErrorTest
+    - ParserTest
+    - TodoParserTest
+  end note
+}
+
+' Une (ou deux) dépendances globales pour montrer que les tests couvrent le code
+"test (src/test/java)" ..> "eirb.pg203" : tests
+"test (src/test/java)" ..> "eirb.pg203.model" : tests
+
+
+@enduml
