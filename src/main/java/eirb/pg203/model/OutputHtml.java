@@ -136,7 +136,7 @@ public class OutputHtml extends Output {
   @Override
   public String displayTodo(Todo T) {
     // préparation des dates
-    String start = (T.date_start != null) ? fmt(T.date_start) : "-";
+    String start = (T.start_date != null) ? fmt(T.start_date) : "-";
     String due = (T.due_date != null) ? fmtDate(T.due_date) : "Aucune";
     String completed = (T.completed_date != null) ? fmt(T.completed_date) : "-";
     String location = (T.location != null && !T.location.isEmpty()) ? T.location : "-";

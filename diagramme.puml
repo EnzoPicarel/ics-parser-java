@@ -48,7 +48,7 @@ package "eirb.pg203.model" {
     + due_date : Instant
     + modification_date : Instant
     + creation_date : Instant
-    + date_start : Instant
+    + start_date : Instant
     + status : String
     + sequence : String
     + organizer : String

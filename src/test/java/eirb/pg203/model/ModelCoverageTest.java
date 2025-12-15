@@ -52,7 +52,7 @@ class ModelCoverageTest {
             now, // due_date
             now, // modification_date
             now, // creation_date (DTSTAMP - héritée)
-            now, // date_start (spécifique Todo ici)
+            now, // start_date (spécifique Todo ici)
             status,
             attendance,
             sequence,
@@ -68,7 +68,7 @@ class ModelCoverageTest {
     assertEquals(now, todo.due_date);
     assertEquals(now, todo.modification_date);
     assertEquals(now, todo.creation_date);
-    assertEquals(now, todo.date_start);
+    assertEquals(now, todo.start_date);
     assertEquals(status, todo.status);
     assertEquals(attendance, todo.attendance);
     assertEquals(sequence, todo.sequence);

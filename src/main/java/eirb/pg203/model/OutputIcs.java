@@ -54,7 +54,7 @@ public class OutputIcs extends Output {
         .append(generateLine("UID", t.uid))
         .append(generateLine("SUMMARY", t.summary))
         .append(generateLine("STATUS", t.status))
-        .append(generateLine("DSTART;VALUE=DATE", fmtDate(t.date_start)))
+        .append(generateLine("DSTART;VALUE=DATE", fmtDate(t.start_date)))
         .append(generateLine("DUE;VALUE=DATE", fmtDate(t.due_date)))
         .append(generateLine("COMPLETED", fmt(t.completed_date)))
         .append(generateLine("LAST-MODIFIED", fmt(t.modification_date)))
