@@ -73,21 +73,18 @@ Le rapport se trouve dans `build/reports/jacoco/test/html/index.html`.
 
 ```bash
 ./gradlew run --args "src/test/resources/events_minimal.ics events -html -o out_events.html -from 20251106 -to 20251106"
-head -n 20 out_events.html
 ```
 
 - Exporter en ICS dans `out_events.ics` :
 
 ```bash
 ./gradlew run --args "src/test/resources/events_minimal.ics events -ics -o out_events.ics -from 20251106 -to 20251106"
-sed -n '1,120p' out_events.ics
 ```
 
 - Lister tous les todos en texte dans `out_todos.txt` :
 
 ```bash
 ./gradlew run --args "src/test/resources/todos.ics todos -txt -all -o out_todos.txt"
-head -n 60 out_todos.txt
 ```
 
 - Exemple d'invocation invalide (affiche l'aide et renvoie une erreur) :
