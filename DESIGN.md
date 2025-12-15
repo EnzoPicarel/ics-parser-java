@@ -67,14 +67,4 @@ Comment utilisez-vous les exceptions dans votre programme?
 
 Problèmes techniques : Les erreurs d'entrées / sorties (IOException, FileNotFOundEXception) son gérées explicitement. Par exemple, si un fichier est introuvable, l'exception est capturée et transformée en un message d'erreur. 
 
-Erreurs d'utilisation : Les erreurs de configuration (arguments invalides, dates malformées) déclenchent des IllegalArgumentException dans ArgumentParser. Ces exceptions affichent un message d'aide et termine le programme avec un code d'erreur. 
-
-
-
-
-
-
-
-
-
-            
+Erreurs d'utilisation : Les erreurs de configuration (arguments invalides, dates malformées) déclenchent des IllegalArgumentException dans ArgumentParser. Ces exceptions affichent un message d'aide et termine le programme avec un code d'erreur.

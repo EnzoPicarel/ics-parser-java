@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 
 public class ArgumentParser {
 
+  // format pour les dates
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
   public CliConfig parse(String[] args) {
@@ -14,6 +15,7 @@ public class ArgumentParser {
       return null;
     }
 
+    // récupère le fichier et le type
     String inputFile = args[0];
     String componentType = args[1];
 
@@ -22,6 +24,7 @@ public class ArgumentParser {
       return null;
     }
 
+    // valeurs par défaut
     Output outputGenerator = new OutputTxt();
     String outputFile = "";
     EventFilter eventFilter = new EventFilter.TodayFilter();
@@ -32,8 +35,10 @@ public class ArgumentParser {
     boolean hasTimeFilter = false;
     boolean hasStatusFilter = false;
 
+    // boucle sur les options
     for (int i = 2; i < args.length; i++) {
       switch (args[i]) {
+          // formats de sortie
         case "-ics":
           outputGenerator = new OutputIcs();
           break;
@@ -53,6 +58,7 @@ public class ArgumentParser {
           }
           break;
 
+          // filtres pour events
         case "-today":
           if (!componentType.equals("events")) {
             System.err.println("Error: -today is only valid with 'events'");
@@ -140,6 +146,7 @@ public class ArgumentParser {
           }
           break;
 
+          // filtres pour todos
         case "-incomplete":
           if (!componentType.equals("todos")) {
             System.err.println("Error: -incomplete is only valid with 'todos'");
@@ -205,12 +212,14 @@ public class ArgumentParser {
           hasStatusFilter = true;
           break;
 
+          // option inconnue
         default:
           System.err.println("Unknown option: " + args[i]);
           return null;
       }
     }
 
+    // gestion des dates personnalisées
     if (fromDate != null || toDate != null) {
       if (fromDate == null) {
         System.err.println("Error: -to requires -from");
@@ -227,14 +236,17 @@ public class ArgumentParser {
       eventFilter = new EventFilter.DateRangeFilter(fromDate, toDate);
     }
 
+    // on retourne la config
     return new CliConfig(
         inputFile, componentType, outputGenerator, outputFile, eventFilter, todoFilter);
   }
 
+  // check si le type est ok
   private boolean isValidComponentType(String type) {
     return "events".equals(type) || "todos".equals(type);
   }
 
+  // affiche l'aide
   private void printUsage() {
     System.err.println("Usage: clical file.ics events|todos [options]");
     System.err.println("Options for events:");

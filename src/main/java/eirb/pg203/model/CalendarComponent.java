@@ -4,7 +4,7 @@ import java.time.Instant;
 
 public abstract class CalendarComponent {
 
-  // Propriétés communes
+  // propriétés communes
   String uid;
 
   String summary;

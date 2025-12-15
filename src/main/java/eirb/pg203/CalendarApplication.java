@@ -10,6 +10,7 @@ public class CalendarApplication {
     this.argumentParser = new ArgumentParser();
   }
 
+  // méthode run principale
   public int run(String[] args) {
     CliConfig config = argumentParser.parse(args);
     if (config == null) {
@@ -17,10 +18,13 @@ public class CalendarApplication {
     }
 
     try {
+      // parse le fichier d'entrée
       Calendar calendar = AbstractParser.chooseParser(config.inputFile, config.componentType);
 
+      // applique les filtres
       Calendar filteredCalendar = applyFilters(calendar, config);
 
+      // affiche le résultat
       config.outputGenerator.displayCalendar(filteredCalendar, config.outputFile);
       return 0;
     } catch (Exception e) {
@@ -29,6 +33,7 @@ public class CalendarApplication {
     }
   }
 
+  // filtre selon le type
   private Calendar applyFilters(Calendar calendar, CliConfig config) {
     Calendar filtered = new Calendar();
 

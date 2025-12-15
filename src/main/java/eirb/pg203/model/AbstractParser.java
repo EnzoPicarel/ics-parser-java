@@ -28,14 +28,13 @@ public abstract class AbstractParser {
   protected Calendar parseStream(Reader reader, String type) throws IOException {
     Calendar calendar = new Calendar();
 
-    try (IcsReader icsReader =
-        new IcsReader(
-            reader)) { // utilisation de la classe IcsReader pour gérer les lignes continues ->
+    try (IcsReader icsReader = new IcsReader(reader)) {
+      // utilisation de la classe IcsReader pour gérer les lignes continues ->
       // intéret de AutoCloseable
       String line;
       while ((line = icsReader.readLogicalLine()) != null) {
-        // Parse TOUS les composants, indépendamment du type demandé
-        // Le filtrage se fera plus tard (getEvents() ou getTodos())
+        // parse TOUS les composants, indépendamment du type demandé
+        // le filtrage se fera plus tard (getEvents() ou getTodos())
         if (line.equals("BEGIN:VEVENT")) {
           Event event = parseVEvent(icsReader); // icsReader est positionné après BEGIN:VEVENT
           if (event != null) calendar.addComponent(event);
@@ -113,23 +112,23 @@ public abstract class AbstractParser {
   protected Instant parseIcsDate(String s) {
     if (s == null || s.isEmpty()) return null;
     try {
-      // 1. Cas "Date-Heure" (ex: 20251104T204504Z)
+      // 1. cas "Date-Heure" (ex: 20251104T204504Z)
       if (s.contains("T")) {
         String cleanDate = s.replace("Z", "");
         DateTimeFormatter f =
             DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss").withZone(ZoneId.of("UTC"));
         return Instant.from(f.parse(cleanDate));
       }
-      // 2. Cas "Date Seule" (ex: 20251107) -> format utilisé par DUE
+      // 2. cas "Date Seule" (ex: 20251107) -> format utilisé par DUE
       else {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyyMMdd");
-        // On parse en LocalDate (jour), puis on dit que c'est le début de cette journée
+        // on parse en LocalDate (jour), puis on dit que c'est le début de cette journée
         // en UTC
         LocalDate date = LocalDate.parse(s, f);
         return date.atStartOfDay(ZoneId.of("UTC")).toInstant();
       }
     } catch (Exception e) {
-      // En cas d'erreur, on l'affiche pour déboguer au lieu de renvoyer null
+      // en cas d'erreur, on l'affiche pour déboguer au lieu de renvoyer null
       // silencieusement
       System.err.println("Erreur parsing date : " + s);
       return null;

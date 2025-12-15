@@ -15,12 +15,12 @@ public class OutputIcs extends Output {
   @Override
   public String header() {
     return """
-                BEGIN:VCALENDAR\r
-                VERSION:2.0\r
-                PRODID:-//ADE/version 6.0\r
-                CALSCALE:GREGORIAN\r
-                METHOD:PUBLISH\r
-                """;
+        BEGIN:VCALENDAR\r
+        VERSION:2.0\r
+        PRODID:-//ADE/version 6.0\r
+        CALSCALE:GREGORIAN\r
+        METHOD:PUBLISH\r
+        """;
   }
 
   @Override
