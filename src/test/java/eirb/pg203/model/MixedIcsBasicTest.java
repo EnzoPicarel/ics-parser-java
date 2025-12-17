@@ -14,22 +14,15 @@ public class MixedIcsBasicTest {
     assertNotNull(cal, "Le calendrier ne doit pas être null");
     assertFalse(cal.getEvents().isEmpty(), "Le calendrier brut doit contenir les événements");
     assertFalse(cal.getTodos().isEmpty(), "Le calendrier brut doit AUSSI contenir les todos");
-
-    // Vérification des quantités (optionnel, selon ton fichier mixed.ics)
-    // assertTrue(cal.getEvents().size() > 0);
-    // assertTrue(cal.getTodos().size() > 0);
   }
 
   @Test
   void knownComponentsArePresent() {
     Calendar cal = AbstractParser.chooseParser(ICS_PATH, "ignored");
-    boolean hasEvent =
-        cal.getEvents().stream()
-            .anyMatch(e -> "Présentation PFA".equals(e.summary)); // ou e.getSummary()
+    boolean hasEvent = cal.getEvents().stream().anyMatch(e -> "Présentation PFA".equals(e.summary));
     assertTrue(hasEvent, "L'événement 'Présentation PFA' doit être chargé");
     boolean hasTodo =
-        cal.getTodos().stream()
-            .anyMatch(t -> "Réviser l'examen de POO".equals(t.summary)); // ou t.getSummary()
+        cal.getTodos().stream().anyMatch(t -> "Réviser l'examen de POO".equals(t.summary));
     assertTrue(hasTodo, "Le Todo 'Réviser l'examen de POO' doit être chargé");
   }
 }

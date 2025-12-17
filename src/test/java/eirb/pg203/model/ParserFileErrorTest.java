@@ -12,8 +12,6 @@ public class ParserFileErrorTest {
   void urlParserNonNull() {
     Calendar cal = AbstractParser.chooseParser("http://example.invalid/some.ics", "events");
     assertNotNull(cal);
-    // No guarantee of network -> expect either empty or something; just ensure no
-    // exception
     assertTrue(cal.getAllComponents().isEmpty());
   }
 
