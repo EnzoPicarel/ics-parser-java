@@ -1,102 +1,129 @@
----
-documentclass: book
-papersize: a4
-fontsize: 10pt
-header-includes: |
-    \usepackage{hyperref}
-    \hypersetup{
-        colorlinks = true,
-        linkbordercolor = {pink},
-    }
----
+<div align="center">
+  <h3 align="center">ICS Parser Java</h3>
 
-# Projet de PG203
+  <p align="center">
+    A command-line calendar application parsing <strong>iCalendar (ICS)</strong> files with filtering and multi-format output support.
+    <br />
+    <a href="#-getting-started"><strong>Get Started »</strong></a>
+  </p>
+  
+  ![CI Status](https://img.shields.io/badge/build-passing-brightgreen)
+  ![License](https://img.shields.io/badge/license-MIT-blue)
+</div>
 
-Ce starter kit vous permet de démarrer un projet d'application en
-ligne de commande Java. La gestion du build est effectuée par l'outil
-Gradle. Deux exécutables sont fournis: `gradlew` pour Unix ou MacOS et
-`gradlew.bat` pour Windows.
+## 🔍 About The Project
+This project implements a full-featured calendar client that parses RFC 5545–compliant iCalendar (ICS) files from local or remote sources. It extracts `VEVENT` and `VTODO` components, applies intelligent temporal and status-based filters, and exports results in multiple formats.
 
-Le starter kit vient avec:
+The project was built under strict constraints: **no external libraries** for either ICS parsing (`ical4j`) or CLI argument management (`picocli`). The primary engineering goal was to practice fundamental OOP pillars—**Encapsulation, Delegation, Inheritance, and Polymorphism**—to create a maintainable, loosely coupled architecture.
 
-- le framework [`JUnit 5`](https://junit.org/junit5/docs/current/user-guide/) pour gérer les tests;
+*Built as a Semester 7 project at ENSEIRB-MATMECA.*
 
-- l'outil [`Jacoco`](https://www.jacoco.org/) pour la couverture du
-  code par les tests.
+### 🛠 Built With
+* **Language:** Java 11+
+* **Build System:** Gradle
+* **Testing:** JUnit 5, JaCoCo
 
-Le starter-kit contient un fichier
-`src/main/java/eirb/pg203/Main.java` qui contient un programme de
-démonstration. Ce programme récupère lit un fichier iCalendar contenant
-l'emploi du temps de I2 et affiche les 20 premières lignes sur
-la console.
+## 📐 Architecture
 
-Le fichier `src/main/java/eirb/pg203/SampleTest.java` contient un
-petit exemple de test unitaire de la fonction qui charge les données.
+### Technical Highlights
+* **Custom RFC 5545 Parser:** Implements a state machine for line unfolding (RFC §3.1) with character-level buffering to preserve lookahead semantics without external parsing libraries.
+* **Manual CLI Argument Parsing:** A robust argument parser built from scratch (replacing `picocli`) that handles cumulative flags, detects invalid combinations, and enforces default modes.
+* **Strategy Pattern (Output):** Polymorphic `Output` hierarchy allows runtime selection of export formats (`Text`, `HTML`, `ICS`) via a static factory, decoupling logic from presentation. 
+* **Template Method (Parsing):** `AbstractParser` defines the skeletal parsing algorithm, while subclasses (`ParserFile`, `ParserURL`) implement specific I/O delegation logic.
+* **Filter Chain:** Composition-based filtering logic. `EventFilter` and `TodoFilter` hierarchies allow cumulative constraints (e.g., "Incomplete tasks due Tomorrow") to be validated and applied sequentially.
 
-Voici comment effectuer les différentes commandes importantes.
-
-## Compilation
-
-```bash
-./gradlew build
+### File Organization
+```text
+├── build.gradle               # Project dependencies and build tasks
+├── DESIGN.md                  # Architecture rationale and pattern documentation
+├── SUBJECT.md                 # Original academic subject
+├── diagramme.png              # UML Class Diagram visualization
+├── src/main/java/eirb/pg203/
+│   ├── CalendarApplication.java   # Orchestrator: args → load → filter → output
+│   ├── ArgumentParser.java        # CLI parsing & Filter Chain validation
+│   └── model/
+│       ├── AbstractParser.java    # Template Method for parsing logic
+│       ├── IcsReader.java         # Low-level RFC 5545 Line Unfolding
+│       ├── Output.java            # Strategy Pattern base (Txt, Html, Ics)
+│       ├── Calendar.java          # Root container (Stream-based filtering)
+│       ├── EventFilter.java       # Temporal filters (Today, Week, Range)
+│       └── TodoFilter.java        # Status filters (Incomplete, Done, In-Process)
+└── src/test/resources/        # RFC 5545 test samples (folded lines, mixed content)
 ```
 
-## Lancement des tests
+## 🚀 Getting Started
 
-```bash
-./gradlew test
-```
+### Prerequisites
+* **Java Development Kit (JDK)** (11 or later)
+* **Gradle** (8.10+ or use bundled wrapper)
 
-## Génération du rapport de couverture
+### Installation & Build
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/EnzoPicarel/ics-parser-java.git
+   cd ics-parser-java
+   ```
 
-```bash
-./gradlew jacocoTestReport
-```
+2. **Build the project**
+   ```bash
+   ./gradlew build
+   ```
 
-Le rapport se trouve dans `build/reports/jacoco/test/html/index.html`.
+3. **Verify the build**
+   ```bash
+   ./gradlew test
+   ```
 
-## Lancement du programme
+## ⚡ Execution
 
-```bash
-./gradlew run --args "<input-file> <events|todos> [options]"
-```
+The application is executed via the Gradle wrapper.
 
-### Exemples pratiques
+**Syntax:** `./gradlew run --args "<file> <mode> [filters] [options]"`
 
-- Afficher des événements (texte) pour une plage de dates (stdout) :
-
+### 1. Events (Text Output)
+Parse a local file and show events for a specific date range (stdout).
 ```bash
 ./gradlew run --args "src/test/resources/events_minimal.ics events -text -from 20251106 -to 20251106"
 ```
 
-- Exporter en HTML dans `out_events.html` :
-
+### 2. Todos (HTML Export)
+Extract all incomplete todos and save them as a styled HTML report.
 ```bash
-./gradlew run --args "src/test/resources/events_minimal.ics events -html -o out_events.html -from 20251106 -to 20251106"
+./gradlew run --args "src/test/resources/todos.ics todos -all -html -o out_todos.html"
 ```
 
-- Exporter en ICS dans `out_events.ics` :
-
+### 3. Full Export (ICS Format)
+Read a mixed remote/local file and re-serialize it to a valid ICS file.
 ```bash
-./gradlew run --args "src/test/resources/events_minimal.ics events -ics -o out_events.ics -from 20251106 -to 20251106"
+./gradlew run --args "src/test/resources/mixed.ics events -ics -o out_calendar.ics"
 ```
 
-- Lister tous les todos en texte dans `out_todos.txt` :
+**Available Flags:**
+* **Events Status:** `-today` (Default), `-tomorrow`, `-week`, `-from YYYYMMDD -to YYYYMMDD`.
+* **Todos Status:** `-incomplete` (Default), `-all`, `-completed`, `-inprocess`, `-needsaction`.
+* **Formats:** `-text` (Default), `-html`, `-ics`.
+* **Output:** `-o <file>` (Defaults to stdout).
 
+## 🧪 Tests
+
+This project enforces strict code quality standards using **JUnit 5** and **JaCoCo**.
+
+**Run Full Suite:**
 ```bash
-./gradlew run --args "src/test/resources/todos.ics todos -text -all -o out_todos.txt"
+./gradlew test
 ```
 
-- Exemple d'invocation invalide (affiche l'aide et renvoie une erreur) :
-
+**Generate Coverage Report:**
 ```bash
-./gradlew run --args "src/test/resources/events_minimal.ics"
-# => Affiche usage puis erreur
+./gradlew jacocoTestReport
+# Open build/reports/jacoco/test/html/index.html to view coverage
 ```
 
-Options utiles :
+## 👥 Authors
+* **Enzo Picarel**
+* **Thibault Abeille**
+* **Raphaël Bely**
+* **Numa Guiot**
 
-- `-from YYYYMMDD -to YYYYMMDD` (pour `events`, les deux sont requis)
-- `-today`, `-tomorrow`, `-week` (pour `events`)
-- `-all`, `-incomplete`, `-completed`, `-inprocess`, `-needsaction` (pour `todos`)
-- formats de sortie : `-text` (par défaut), `-html`, `-ics`; utilisez `-o FILE` pour écrire dans un fichier plutôt que stdout.
+---
+*Original Project Specs: [SUBJECT.md](./SUBJECT.md)*
